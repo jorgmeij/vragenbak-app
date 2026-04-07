@@ -499,7 +499,7 @@
         <div class="submissions-label" id="subs-label">Inzendingen</div>
         <div class="count-pill" id="count-pill">0</div>
       </div>
-      <div class="submission-list" id="sub-list">
+      <div class="submission-list" id="sub-list" style="display:none">
         <div style="font-size:14px;color:var(--ink-faint);text-align:center;padding:1rem 0" id="empty-msg">Nog geen inzendingen</div>
       </div>
       <div class="divider" id="mod-divider" style="display:none"></div>
@@ -757,6 +757,8 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('to-p2-btn').style.display = 'block';
     document.getElementById('stepper').style.display = 'flex';
     document.getElementById('reset-link').style.display = 'block';
+    document.getElementById('sub-list').style.display = 'flex';
+    document.getElementById('subs-label').style.display = 'block';
   } else {
     document.getElementById('stepper').style.display = 'none';
     document.getElementById('phase2').style.display = 'none';
