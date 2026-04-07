@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Vragenbak & World Café</title>
+<title>Mojeo Mingle</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
     --bg: #F5F2EC;
@@ -13,10 +13,10 @@
     --ink: #1A1814;
     --ink-muted: #6B6760;
     --ink-faint: #B0ADA8;
-    --accent: #2D5A3D;
-    --accent-light: #E8F0EB;
-    --accent2: #8B4513;
-    --gold: #C4922A;
+    --accent: #FF3300;
+    --accent-light: #FFF0ED;
+    --accent2: #F4B900;
+    --gold: #F4B900;
     --border: rgba(26,24,20,0.12);
     --radius: 12px;
   }
@@ -26,7 +26,7 @@
   body {
     background: var(--bg);
     color: var(--ink);
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Poppins', sans-serif;
     font-size: 16px;
     line-height: 1.6;
     min-height: 100vh;
@@ -49,15 +49,16 @@
   }
 
   .logo {
-    font-family: 'DM Serif Display', serif;
+    font-family: 'Poppins', sans-serif;
     font-size: 22px;
-    color: var(--ink);
+    font-weight: 700;
+    color: #FF3300;
     line-height: 1.2;
   }
 
   .logo span {
     display: block;
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Poppins', sans-serif;
     font-size: 12px;
     font-weight: 400;
     color: var(--ink-muted);
@@ -82,7 +83,7 @@
     padding: 5px 12px;
     font-size: 12px;
     font-weight: 500;
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Poppins', sans-serif;
     cursor: pointer;
     color: var(--ink-muted);
     transition: all 0.15s;
@@ -126,9 +127,9 @@
   }
 
   .step-num.active {
-    background: var(--accent);
+    background: #FF3300;
     color: white;
-    border-color: var(--accent);
+    border-color: #FF3300;
   }
 
   .step-num.done {
@@ -166,7 +167,7 @@
   }
 
   .card-title {
-    font-family: 'DM Serif Display', serif;
+    font-family: 'Poppins', sans-serif;
     font-size: 20px;
     color: var(--ink);
     margin-bottom: 0.25rem;
@@ -186,7 +187,7 @@
     border-radius: 8px;
     padding: 12px 14px;
     font-size: 15px;
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Poppins', sans-serif;
     background: var(--bg);
     color: var(--ink);
     resize: none;
@@ -196,7 +197,7 @@
 
   textarea:focus, input:focus {
     outline: none;
-    border-color: var(--accent);
+    border-color: #FF3300;
   }
 
   textarea { min-height: 90px; }
@@ -208,7 +209,7 @@
     border-radius: 8px;
     font-size: 14px;
     font-weight: 500;
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Poppins', sans-serif;
     cursor: pointer;
     transition: all 0.15s;
     margin-top: 0.75rem;
@@ -216,12 +217,12 @@
   }
 
   .btn-primary {
-    background: var(--accent);
+    background: #FF3300;
     color: white;
     border: none;
   }
 
-  .btn-primary:hover { background: #234a31; }
+  .btn-primary:hover { background: #cc2900; }
   .btn-primary:disabled { background: var(--ink-faint); cursor: not-allowed; }
 
   .btn-outline {
@@ -233,7 +234,7 @@
   .btn-outline:hover { background: var(--bg); }
 
   .btn-dark {
-    background: var(--ink);
+    background: #1A1814;
     color: white;
     border: none;
   }
@@ -456,8 +457,8 @@
 <div class="app">
   <div class="header">
     <div class="logo">
-      Vragenbak
-      <span id="logo-sub">World Café facilitator</span>
+      Mojeo Mingle
+      <span id="logo-sub">Shared knowledge. Shared mojo.</span>
     </div>
     <div class="lang-toggle">
       <button class="lang-btn active" onclick="setLang('nl')" id="btn-nl">NL</button>
@@ -593,7 +594,7 @@ const isMod = new URLSearchParams(window.location.search).has('mod');
 
 const T = {
   nl: {
-    logoSub: 'World Café facilitator',
+    logoSub: 'Shared knowledge. Shared mojo.',
     p1Title: 'Stel je vraag',
     p1Sub: 'Wat is jouw grootste uitdaging of vraag rondom portfolio management?',
     placeholder: 'Typ hier je vraag of uitdaging...',
@@ -619,7 +620,7 @@ const T = {
     confirmReset: 'Weet je zeker dat je de sessie wilt resetten? Alle data wordt gewist.'
   },
   en: {
-    logoSub: 'World Café facilitator',
+    logoSub: 'Shared knowledge. Shared mojo.',
     p1Title: 'Submit your question',
     p1Sub: 'What is your biggest challenge or question around portfolio management?',
     placeholder: 'Type your question or challenge here...',
