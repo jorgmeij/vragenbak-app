@@ -465,7 +465,7 @@
     </div>
   </div>
 
-  <div class="stepper">
+  <div class="stepper" id="stepper">
     <div class="step">
       <div class="step-num active" id="sn0">1</div>
       <div class="step-label active" id="sl0" data-nl="Verzamelen" data-en="Collect">Verzamelen</div>
@@ -502,8 +502,8 @@
       <div class="submission-list" id="sub-list">
         <div style="font-size:14px;color:var(--ink-faint);text-align:center;padding:1rem 0" id="empty-msg">Nog geen inzendingen</div>
       </div>
-      <div class="divider"></div>
-      <button class="btn btn-dark" onclick="goPhase2()" id="to-p2-btn">
+      <div class="divider" id="mod-divider" style="display:none"></div>
+      <button class="btn btn-dark" onclick="goPhase2()" id="to-p2-btn" style="display:none">
         <span id="to-p2-label">Naar fase 2 — Clusteren →</span>
       </button>
     </div>
@@ -535,7 +535,7 @@
     <button class="btn btn-outline" onclick="goBack(2)" id="back2-btn" style="margin-top:0">← <span id="back2-label">Terug naar fase 2</span></button>
   </div>
 
-  <div class="reset-link" onclick="resetSession()" id="reset-link">Sessie resetten</div>
+  <div class="reset-link" onclick="resetSession()" id="reset-link" style="display:none">Sessie resetten</div>
 </div>
 
 <!-- Firebase -->
@@ -589,6 +589,7 @@
 let lang = 'nl';
 let currentPhase = 1;
 window._clusters = null;
+const isMod = new URLSearchParams(window.location.search).has('mod');
 
 const T = {
   nl: {
@@ -749,6 +750,18 @@ document.addEventListener('DOMContentLoaded', () => {
       submitQuestion();
     }
   });
+
+  // Show/hide mod elements
+  if (isMod) {
+    document.getElementById('mod-divider').style.display = 'block';
+    document.getElementById('to-p2-btn').style.display = 'block';
+    document.getElementById('stepper').style.display = 'flex';
+    document.getElementById('reset-link').style.display = 'block';
+  } else {
+    document.getElementById('stepper').style.display = 'none';
+    document.getElementById('phase2').style.display = 'none';
+    document.getElementById('phase3').style.display = 'none';
+  }
 });
 
 async function clusterQuestions() {
