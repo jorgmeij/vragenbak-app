@@ -529,7 +529,7 @@
   <div id="phase3" style="display:none">
     <div class="card">
       <div class="card-title" id="p3-title">Tafelvragen</div>
-      <div class="card-sub" id="p3-sub">Per tafel één startvraag — gebaseerd op wat de groep inbracht.</div>
+      <div class="card-sub" id="p3-sub">Selecteer per tafel een startvraag.</div>
     </div>
     <div id="tables-output"></div>
     <button class="btn btn-outline" onclick="goBack(2)" id="back2-btn" style="margin-top:0">← <span id="back2-label">Terug naar fase 2</span></button>
@@ -812,18 +812,44 @@ window._renderClusters = function(clusters) {
   document.getElementById('cluster-output').innerHTML = html;
 };
 
+// Track selected questions per table (index -> question string)
+window._tableSelections = {};
+
 window._renderTables = function(clusters) {
-  const html = clusters.map((c, i) => `
-    <div class="table-card">
+  const html = clusters.map((c, i) => {
+    const sel = window._tableSelections[i] || null;
+    const btnLabel = lang === 'nl' ? 'Selecteer een vraag' : 'Select a question';
+    const newLabel = lang === 'nl' ? 'Andere vraag' : 'New question';
+    return `
+    <div class="table-card" id="table-card-${i}">
       <div class="table-card-header">
         <div class="table-badge">${t('tableLabel', i+1)}</div>
         <div class="table-theme">${escHtml(c.theme)}</div>
       </div>
-      <div class="table-question">"${escHtml(c.selected)}"</div>
+      <div style="padding:14px 16px">
+        ${sel
+          ? `<div class="table-question" id="table-q-${i}">"${escHtml(sel)}"</div>
+             <button class="btn btn-outline" style="margin-top:0.75rem" onclick="pickQuestion(${i})">${newLabel}</button>`
+          : `<button class="btn btn-primary" style="margin-top:0" onclick="pickQuestion(${i})">${btnLabel}</button>`
+        }
+      </div>
     </div>
-  `).join('');
+  `}).join('');
   document.getElementById('tables-output').innerHTML = html;
 };
+
+function pickQuestion(tableIndex) {
+  const clusters = window._clusters;
+  if (!clusters) return;
+  const questions = clusters[tableIndex].questions;
+  const current = window._tableSelections[tableIndex];
+  // Pick random, avoid same as current if possible
+  let available = questions.filter(q => q !== current);
+  if (available.length === 0) available = questions;
+  const picked = available[Math.floor(Math.random() * available.length)];
+  window._tableSelections[tableIndex] = picked;
+  window._renderTables(clusters);
+}
 
 async function resetSession() {
   if (!confirm(t('confirmReset'))) return;
