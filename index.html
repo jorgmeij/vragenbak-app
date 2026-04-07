@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vragenbak & World Café</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F5F2EC;
+    --surface: #FDFBF7;
+    --ink: #1A1814;
+    --ink-muted: #6B6760;
+    --ink-faint: #B0ADA8;
+    --accent: #2D5A3D;
+    --accent-light: #E8F0EB;
+    --accent2: #8B4513;
+    --gold: #C4922A;
+    --border: rgba(26,24,20,0.12);
+    --radius: 12px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  .app {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 4rem;
+  }
+
+  /* Header */
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .logo {
+    font-family: 'DM Serif Display', serif;
+    font-size: 22px;
+    color: var(--ink);
+    line-height: 1.2;
+  }
+
+  .logo span {
+    display: block;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+    color: var(--ink-muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+
+  .lang-toggle {
+    display: flex;
+    gap: 4px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 3px;
+  }
+
+  .lang-btn {
+    background: transparent;
+    border: none;
+    border-radius: 6px;
+    padding: 5px 12px;
+    font-size: 12px;
+    font-weight: 500;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    color: var(--ink-muted);
+    transition: all 0.15s;
+    letter-spacing: 0.05em;
+  }
+
+  .lang-btn.active {
+    background: var(--ink);
+    color: white;
+  }
+
+  /* Phase stepper */
+  .stepper {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    margin-bottom: 2rem;
+  }
+
+  .step {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+  }
+
+  .step-num {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 500;
+    border: 1.5px solid var(--border);
+    color: var(--ink-muted);
+    background: var(--surface);
+    flex-shrink: 0;
+    transition: all 0.3s;
+  }
+
+  .step-num.active {
+    background: var(--accent);
+    color: white;
+    border-color: var(--accent);
+  }
+
+  .step-num.done {
+    background: var(--ink);
+    color: white;
+    border-color: var(--ink);
+  }
+
+  .step-label {
+    font-size: 12px;
+    color: var(--ink-muted);
+    font-weight: 400;
+    white-space: nowrap;
+  }
+
+  .step-label.active {
+    color: var(--ink);
+    font-weight: 500;
+  }
+
+  .step-line {
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+    margin: 0 8px;
+  }
+
+  /* Cards */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .card-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 20px;
+    color: var(--ink);
+    margin-bottom: 0.25rem;
+  }
+
+  .card-sub {
+    font-size: 14px;
+    color: var(--ink-muted);
+    margin-bottom: 1.25rem;
+    line-height: 1.5;
+  }
+
+  /* Form elements */
+  textarea, input[type="text"] {
+    width: 100%;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 14px;
+    font-size: 15px;
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    resize: none;
+    transition: border-color 0.15s;
+    line-height: 1.5;
+  }
+
+  textarea:focus, input:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+
+  textarea { min-height: 90px; }
+
+  /* Buttons */
+  .btn {
+    width: 100%;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    transition: all 0.15s;
+    margin-top: 0.75rem;
+    letter-spacing: 0.01em;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: white;
+    border: none;
+  }
+
+  .btn-primary:hover { background: #234a31; }
+  .btn-primary:disabled { background: var(--ink-faint); cursor: not-allowed; }
+
+  .btn-outline {
+    background: transparent;
+    color: var(--ink);
+    border: 1px solid var(--border);
+  }
+
+  .btn-outline:hover { background: var(--bg); }
+
+  .btn-dark {
+    background: var(--ink);
+    color: white;
+    border: none;
+  }
+
+  .btn-dark:hover { background: #2d2b27; }
+
+  /* Submissions */
+  .submissions-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+    margin-top: 1.25rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .count-pill {
+    background: var(--accent-light);
+    color: var(--accent);
+    border-radius: 20px;
+    padding: 3px 12px;
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  .submissions-label {
+    font-size: 13px;
+    color: var(--ink-muted);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  .submission-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    max-height: 220px;
+    overflow-y: auto;
+    margin-bottom: 1rem;
+  }
+
+  .submission-item {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 14px;
+    color: var(--ink);
+    line-height: 1.4;
+    animation: fadeIn 0.2s ease;
+  }
+
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
+
+  .success-toast {
+    background: var(--accent-light);
+    color: var(--accent);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 13px;
+    margin-top: 0.5rem;
+    text-align: center;
+    display: none;
+  }
+
+  /* Clusters */
+  .cluster-block {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 0.75rem;
+  }
+
+  .cluster-header {
+    background: var(--bg);
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .cluster-num {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--ink);
+    color: white;
+    font-size: 11px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .cluster-theme {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--ink);
+  }
+
+  .cluster-questions {
+    padding: 0 14px;
+  }
+
+  .cluster-q-item {
+    font-size: 13px;
+    color: var(--ink-muted);
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+    line-height: 1.4;
+  }
+
+  .cluster-q-item:last-child { border-bottom: none; }
+
+  /* Tables phase */
+  .table-card {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    margin-bottom: 1rem;
+  }
+
+  .table-card-header {
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .table-badge {
+    background: var(--ink);
+    color: white;
+    border-radius: 6px;
+    padding: 3px 10px;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    flex-shrink: 0;
+  }
+
+  .table-theme {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--ink);
+  }
+
+  .table-question {
+    padding: 14px 16px;
+    font-size: 15px;
+    color: var(--ink);
+    line-height: 1.5;
+    background: var(--surface);
+    font-style: italic;
+  }
+
+  /* Loading */
+  .loading-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 1rem 0;
+    color: var(--ink-muted);
+    font-size: 14px;
+  }
+
+  .spinner {
+    width: 18px;
+    height: 18px;
+    border: 2px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    flex-shrink: 0;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .error-msg {
+    background: #FEF2E8;
+    color: var(--accent2);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 13px;
+    margin-top: 0.75rem;
+  }
+
+  /* Divider */
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 1.25rem 0;
+  }
+
+  /* Reset button */
+  .reset-link {
+    display: block;
+    text-align: center;
+    font-size: 12px;
+    color: var(--ink-faint);
+    cursor: pointer;
+    margin-top: 1.5rem;
+    text-decoration: underline;
+  }
+
+  .reset-link:hover { color: var(--ink-muted); }
+
+  /* Responsive */
+  @media (max-width: 480px) {
+    .step-label { display: none; }
+    .app { padding: 1.25rem 1rem 3rem; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <div class="logo">
+      Vragenbak
+      <span id="logo-sub">World Café facilitator</span>
+    </div>
+    <div class="lang-toggle">
+      <button class="lang-btn active" onclick="setLang('nl')" id="btn-nl">NL</button>
+      <button class="lang-btn" onclick="setLang('en')" id="btn-en">EN</button>
+    </div>
+  </div>
+
+  <div class="stepper">
+    <div class="step">
+      <div class="step-num active" id="sn0">1</div>
+      <div class="step-label active" id="sl0" data-nl="Verzamelen" data-en="Collect">Verzamelen</div>
+    </div>
+    <div class="step-line"></div>
+    <div class="step">
+      <div class="step-num" id="sn1">2</div>
+      <div class="step-label" id="sl1" data-nl="Clusteren" data-en="Cluster">Clusteren</div>
+    </div>
+    <div class="step-line"></div>
+    <div class="step">
+      <div class="step-num" id="sn2">3</div>
+      <div class="step-label" id="sl2" data-nl="Tafels" data-en="Tables">Tafels</div>
+    </div>
+  </div>
+
+  <!-- Phase 1 -->
+  <div id="phase1">
+    <div class="card">
+      <div class="card-title" id="p1-title">Stel je vraag</div>
+      <div class="card-sub" id="p1-sub">Wat is jouw grootste uitdaging of vraag rondom portfolio management?</div>
+      <textarea id="q-input" placeholder="Typ hier je vraag of uitdaging..." rows="3"></textarea>
+      <div class="success-toast" id="toast"></div>
+      <button class="btn btn-primary" onclick="submitQuestion()" id="submit-btn">
+        <span id="submit-label">Indienen</span>
+      </button>
+    </div>
+
+    <div class="card">
+      <div class="submissions-header">
+        <div class="submissions-label" id="subs-label">Inzendingen</div>
+        <div class="count-pill" id="count-pill">0</div>
+      </div>
+      <div class="submission-list" id="sub-list">
+        <div style="font-size:14px;color:var(--ink-faint);text-align:center;padding:1rem 0" id="empty-msg">Nog geen inzendingen</div>
+      </div>
+      <div class="divider"></div>
+      <button class="btn btn-dark" onclick="goPhase2()" id="to-p2-btn">
+        <span id="to-p2-label">Naar fase 2 — Clusteren →</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Phase 2 -->
+  <div id="phase2" style="display:none">
+    <div class="card">
+      <div class="card-title" id="p2-title">Clusteren</div>
+      <div class="card-sub" id="p2-sub">Claude analyseert de inzendingen en groepeert ze naar 3 thema's.</div>
+      <button class="btn btn-primary" onclick="clusterQuestions()" id="cluster-btn">
+        <span id="cluster-label">Clusteren met Claude</span>
+      </button>
+      <div id="cluster-output" style="margin-top:1rem"></div>
+      <button class="btn btn-dark" onclick="goPhase3()" id="to-p3-btn" style="display:none;margin-top:1rem">
+        <span id="to-p3-label">Naar fase 3 — Tafels →</span>
+      </button>
+    </div>
+    <button class="btn btn-outline" onclick="goBack(1)" id="back1-btn" style="margin-top:0">← <span id="back1-label">Terug naar fase 1</span></button>
+  </div>
+
+  <!-- Phase 3 -->
+  <div id="phase3" style="display:none">
+    <div class="card">
+      <div class="card-title" id="p3-title">Tafelvragen</div>
+      <div class="card-sub" id="p3-sub">Per tafel één startvraag — gebaseerd op wat de groep inbracht.</div>
+    </div>
+    <div id="tables-output"></div>
+    <button class="btn btn-outline" onclick="goBack(2)" id="back2-btn" style="margin-top:0">← <span id="back2-label">Terug naar fase 2</span></button>
+  </div>
+
+  <div class="reset-link" onclick="resetSession()" id="reset-link">Sessie resetten</div>
+</div>
+
+<!-- Firebase -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getDatabase, ref, push, onValue, remove, set } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCiViSbkDKXF111ZRbN7WKww6A0fDgB1Fg",
+    authDomain: "vragenbak-app.firebaseapp.com",
+    databaseURL: "https://vragenbak-app-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "vragenbak-app",
+    storageBucket: "vragenbak-app.firebasestorage.app",
+    messagingSenderId: "338987639566",
+    appId: "1:338987639566:web:52ac29a76c55cc90356d5f"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+
+  const subsRef = ref(db, 'submissions');
+  const clustersRef = ref(db, 'clusters');
+  const phaseRef = ref(db, 'phase');
+
+  // Expose to window for use in non-module functions
+  window._fb = { db, ref, push, onValue, remove, set, subsRef, clustersRef, phaseRef };
+
+  // Listen to submissions
+  onValue(subsRef, (snap) => {
+    const data = snap.val();
+    const subs = data ? Object.values(data) : [];
+    window._renderSubmissions(subs);
+  });
+
+  // Listen to clusters
+  onValue(clustersRef, (snap) => {
+    const data = snap.val();
+    if (data) {
+      window._clusters = data;
+      window._renderClusters(data);
+      window._renderTables(data);
+      document.getElementById('to-p3-btn').style.display = 'block';
+    }
+  });
+
+  // Phase sync disabled - phase is local only
+  // onValue(phaseRef, ...)
+</script>
+
+<script>
+let lang = 'nl';
+let currentPhase = 1;
+window._clusters = null;
+
+const T = {
+  nl: {
+    logoSub: 'World Café facilitator',
+    p1Title: 'Stel je vraag',
+    p1Sub: 'Wat is jouw grootste uitdaging of vraag rondom portfolio management?',
+    placeholder: 'Typ hier je vraag of uitdaging...',
+    submitLabel: 'Indienen',
+    toastDone: 'Ingediend! Voeg gerust nog een vraag toe.',
+    subsLabel: 'Inzendingen',
+    emptyMsg: 'Nog geen inzendingen',
+    toP2: 'Naar fase 2 — Clusteren →',
+    p2Title: 'Clusteren',
+    p2Sub: 'Claude analyseert de inzendingen en groepeert ze naar 3 thema\'s.',
+    clusterLabel: 'Clusteren met Claude',
+    clustering: 'Bezig met analyseren...',
+    toP3: 'Naar fase 3 — Tafels →',
+    p3Title: 'Tafelvragen',
+    p3Sub: 'Per tafel één startvraag — gebaseerd op wat de groep inbracht.',
+    tableLabel: (n) => `Tafel ${n}`,
+    back1: 'Terug naar fase 1',
+    back2: 'Terug naar fase 2',
+    reset: 'Sessie resetten',
+    errorMin: 'Voeg minimaal 3 vragen toe voordat je clustert.',
+    errorApi: 'Fout bij verbinding met Claude. Probeer opnieuw.',
+    sl0: 'Verzamelen', sl1: 'Clusteren', sl2: 'Tafels',
+    confirmReset: 'Weet je zeker dat je de sessie wilt resetten? Alle data wordt gewist.'
+  },
+  en: {
+    logoSub: 'World Café facilitator',
+    p1Title: 'Submit your question',
+    p1Sub: 'What is your biggest challenge or question around portfolio management?',
+    placeholder: 'Type your question or challenge here...',
+    submitLabel: 'Submit',
+    toastDone: 'Submitted! Feel free to add another question.',
+    subsLabel: 'Submissions',
+    emptyMsg: 'No submissions yet',
+    toP2: 'Go to phase 2 — Cluster →',
+    p2Title: 'Clustering',
+    p2Sub: 'Claude analyses the submissions and groups them into 3 themes.',
+    clusterLabel: 'Cluster with Claude',
+    clustering: 'Analysing...',
+    toP3: 'Go to phase 3 — Tables →',
+    p3Title: 'Table questions',
+    p3Sub: 'One starting question per table — based on what the group submitted.',
+    tableLabel: (n) => `Table ${n}`,
+    back1: 'Back to phase 1',
+    back2: 'Back to phase 2',
+    reset: 'Reset session',
+    errorMin: 'Add at least 3 questions before clustering.',
+    errorApi: 'Error connecting to Claude. Please try again.',
+    sl0: 'Collect', sl1: 'Cluster', sl2: 'Tables',
+    confirmReset: 'Are you sure you want to reset the session? All data will be deleted.'
+  }
+};
+
+function t(k, ...args) {
+  const v = T[lang][k];
+  return typeof v === 'function' ? v(...args) : v;
+}
+
+function setLang(l) {
+  lang = l;
+  document.getElementById('btn-nl').className = 'lang-btn' + (l==='nl'?' active':'');
+  document.getElementById('btn-en').className = 'lang-btn' + (l==='en'?' active':'');
+  const keys = ['logoSub','p1Title','p1Sub','submitLabel','subsLabel','emptyMsg','toP2','p2Title','p2Sub','clusterLabel','toP3','p3Title','p3Sub','back1','back2','reset','sl0','sl1','sl2'];
+  const ids = {
+    logoSub:'logo-sub', p1Title:'p1-title', p1Sub:'p1-sub', submitLabel:'submit-label',
+    subsLabel:'subs-label', emptyMsg:'empty-msg', toP2:'to-p2-label', p2Title:'p2-title',
+    p2Sub:'p2-sub', clusterLabel:'cluster-label', toP3:'to-p3-label', p3Title:'p3-title',
+    p3Sub:'p3-sub', back1:'back1-label', back2:'back2-label', reset:'reset-link',
+    sl0:'sl0', sl1:'sl1', sl2:'sl2'
+  };
+  for (const k of keys) {
+    const el = document.getElementById(ids[k]);
+    if (el) el.textContent = t(k);
+  }
+  document.getElementById('q-input').placeholder = t('placeholder');
+  if (window._clusters) {
+    window._renderTables(window._clusters);
+  }
+}
+
+function updateStepper(phase) {
+  for (let i = 0; i < 3; i++) {
+    const num = document.getElementById('sn' + i);
+    const lbl = document.getElementById('sl' + i);
+    if (i + 1 < phase) {
+      num.className = 'step-num done';
+      lbl.className = 'step-label';
+    } else if (i + 1 === phase) {
+      num.className = 'step-num active';
+      lbl.className = 'step-label active';
+    } else {
+      num.className = 'step-num';
+      lbl.className = 'step-label';
+    }
+  }
+}
+
+function setPhase(p) {
+  currentPhase = p;
+  document.getElementById('phase1').style.display = p === 1 ? 'block' : 'none';
+  document.getElementById('phase2').style.display = p === 2 ? 'block' : 'none';
+  document.getElementById('phase3').style.display = p === 3 ? 'block' : 'none';
+  updateStepper(p);
+}
+
+function goPhase2() { setPhase(2); }
+function goPhase3() { setPhase(3); }
+function goBack(p) { setPhase(p); }
+
+window._renderSubmissions = function(subs) {
+  const list = document.getElementById('sub-list');
+  const empty = document.getElementById('empty-msg');
+  const pill = document.getElementById('count-pill');
+  if (pill) pill.textContent = subs.length;
+  if (subs.length === 0) {
+    if (list) list.innerHTML = '';
+    if (empty) empty.style.display = 'block';
+    return;
+  }
+  if (empty) empty.style.display = 'none';
+  if (list) {
+    list.innerHTML = subs.map(s => `<div class="submission-item">${escHtml(s)}</div>`).join('');
+    list.scrollTop = list.scrollHeight;
+  }
+};
+
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+async function submitQuestion() {
+  const input = document.getElementById('q-input');
+  const val = input.value.trim();
+  if (!val) return;
+  const btn = document.getElementById('submit-btn');
+  btn.disabled = true;
+  try {
+    await window._fb.push(window._fb.subsRef, val);
+    input.value = '';
+    const toast = document.getElementById('toast');
+    toast.textContent = t('toastDone');
+    toast.style.display = 'block';
+    setTimeout(() => toast.style.display = 'none', 3000);
+  } catch(e) {
+    alert('Fout bij opslaan. Controleer je internetverbinding.');
+  }
+  btn.disabled = false;
+}
+
+// Allow Enter+Shift for newline, Enter alone to submit
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('q-input').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      submitQuestion();
+    }
+  });
+});
+
+async function clusterQuestions() {
+  const { onValue, subsRef } = window._fb;
+  // Get current submissions
+  const subs = await new Promise(res => {
+    onValue(subsRef, snap => {
+      const data = snap.val();
+      res(data ? Object.values(data) : []);
+    }, { onlyOnce: true });
+  });
+
+  if (subs.length < 3) {
+    document.getElementById('cluster-output').innerHTML = `<div class="error-msg">${t('errorMin')}</div>`;
+    return;
+  }
+
+  const btn = document.getElementById('cluster-btn');
+  btn.disabled = true;
+  document.getElementById('cluster-label').innerHTML = `<span class="spinner" style="display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,0.3);border-top-color:white;border-radius:50%;animation:spin 0.7s linear infinite;vertical-align:middle;margin-right:8px"></span>${t('clustering')}`;
+
+  const prompt = lang === 'nl'
+    ? `Je bent facilitator van een World Café over portfolio management. Analyseer de onderstaande inzendingen van deelnemers. Groepeer ze in precies 3 clusters. Kies voor elk cluster een bondige, prikkelende themanaam (max 6 woorden). Kies ook per cluster de meest uitdagende en discussiewaardigste vraag als tafelvraag. Geef je antwoord UITSLUITEND als geldig JSON-object, zonder uitleg, zonder markdown, zonder codeblokken:\n{"clusters":[{"theme":"...","questions":["..."],"selected":"..."},{"theme":"...","questions":["..."],"selected":"..."},{"theme":"...","questions":["..."],"selected":"..."}]}\n\nInzendingen:\n${subs.map((s,i)=>`${i+1}. ${s}`).join('\n')}`
+    : `You are a facilitator of a World Café on portfolio management. Analyse the submissions below. Group them into exactly 3 clusters. Choose a concise, thought-provoking theme name (max 6 words) for each. Also select the most challenging and discussion-worthy question per cluster as the table question. Respond ONLY with a valid JSON object, no explanation, no markdown, no code blocks:\n{"clusters":[{"theme":"...","questions":["..."],"selected":"..."},{"theme":"...","questions":["..."],"selected":"..."},{"theme":"...","questions":["..."],"selected":"..."}]}\n\nSubmissions:\n${subs.map((s,i)=>`${i+1}. ${s}`).join('\n')}`;
+
+  try {
+    const res = await fetch('/.netlify/functions/cluster', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prompt })
+    });
+    const data = await res.json();
+    const text = data.content.map(i => i.text || '').join('');
+    const clean = text.replace(/```json|```/g, '').trim();
+    const parsed = JSON.parse(clean);
+    const clusters = parsed.clusters;
+
+    // Save to Firebase so all devices see it
+    await window._fb.set(window._fb.clustersRef, clusters);
+
+  } catch(e) {
+    document.getElementById('cluster-output').innerHTML = `<div class="error-msg">${t('errorApi')}</div>`;
+  }
+
+  btn.disabled = false;
+  document.getElementById('cluster-label').textContent = t('clusterLabel');
+}
+
+window._renderClusters = function(clusters) {
+  const html = clusters.map((c, i) => `
+    <div class="cluster-block">
+      <div class="cluster-header">
+        <div class="cluster-num">${i+1}</div>
+        <div class="cluster-theme">${escHtml(c.theme)}</div>
+      </div>
+      <div class="cluster-questions">
+        ${c.questions.map(q => `<div class="cluster-q-item">${escHtml(q)}</div>`).join('')}
+      </div>
+    </div>
+  `).join('');
+  document.getElementById('cluster-output').innerHTML = html;
+};
+
+window._renderTables = function(clusters) {
+  const html = clusters.map((c, i) => `
+    <div class="table-card">
+      <div class="table-card-header">
+        <div class="table-badge">${t('tableLabel', i+1)}</div>
+        <div class="table-theme">${escHtml(c.theme)}</div>
+      </div>
+      <div class="table-question">"${escHtml(c.selected)}"</div>
+    </div>
+  `).join('');
+  document.getElementById('tables-output').innerHTML = html;
+};
+
+async function resetSession() {
+  if (!confirm(t('confirmReset'))) return;
+  const { remove, subsRef, clustersRef, set, phaseRef } = window._fb;
+  await remove(subsRef);
+  await remove(clustersRef);
+  setPhase(1);
+  window._clusters = null;
+  document.getElementById('cluster-output').innerHTML = '';
+  document.getElementById('to-p3-btn').style.display = 'none';
+  document.getElementById('tables-output').innerHTML = '';
+}
+</script>
+</body>
+</html>
