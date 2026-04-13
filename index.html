@@ -269,7 +269,8 @@ function goBack(p){setPhase(p);}
 function goPhase4(){setPhase(4);}
 
 function getBgStyle(color){
-  return `background: linear-gradient(160deg, ${color} 0%, ${color}cc 100%)`;
+  // Darken slightly for readability while keeping solid
+  return `background: linear-gradient(160deg, ${color} 0%, ${color}ee 60%, ${color}bb 100%)`;
 }
 
 function renderPhase3(){
@@ -321,14 +322,13 @@ function renderPhase3(){
       <button class="p3-action-btn" onclick="goPhase4()" style="border-color:rgba(255,255,255,0.6)">${t('endSession')}</button>
     </div>`;
   } else {
-    const tableKws=window._keywords&&window._keywords[selectedTable]?Object.values(window._keywords[selectedTable]).join(', '):'';
     stageHtml+=`<div class="p3-question-wrap">
       <div class="p3-pillar-label">${activePillar}</div>
       <div class="p3-question-text">${escHtml(activeQuestion)}</div>
-      <div style="margin-top:1.5rem;display:flex;gap:8px;max-width:600px;margin-left:auto;margin-right:auto">
-        <input type="text" id="kw-input-${selectedTable}" placeholder="${t('keywordsPlaceholder')}" value="" style="flex:1;border-radius:10px;border:2px solid rgba(255,255,255,0.4);background:rgba(255,255,255,0.15);color:white;font-family:Poppins,sans-serif;font-size:14px;padding:10px 14px;backdrop-filter:blur(4px)" onkeydown="if(event.key==='Enter')saveKeywords()">
-        <button class="p3-action-btn primary" style="margin:0;padding:10px 18px;flex-shrink:0" onclick="saveKeywords()">${t('addKeywords')}</button>
-      </div>
+    </div>
+    <div style="margin-top:1.5rem;display:flex;gap:8px;max-width:560px;width:100%;padding:0 1rem">
+      <input type="text" id="kw-input-${selectedTable}" placeholder="${t('keywordsPlaceholder')}" style="flex:1;border-radius:10px;border:2px solid rgba(255,255,255,0.5);background:rgba(255,255,255,0.18);color:white;font-family:Poppins,sans-serif;font-size:14px;padding:11px 16px" onkeydown="if(event.key==='Enter')saveKeywords()">
+      <button class="p3-action-btn primary" style="margin:0;padding:11px 18px;flex-shrink:0;white-space:nowrap" onclick="saveKeywords()">${t('addKeywords')}</button>
     </div>
     <div class="p3-actions">
       <button class="p3-action-btn" onclick="generateQuestion()">${t('newQ')}</button>
@@ -337,7 +337,8 @@ function renderPhase3(){
   }
   stageHtml+=`</div>`;
 
-  p3.innerHTML=`<div style="${bgStyle};width:100%;height:100%;display:flex;flex-direction:column">${tbarHtml}${stageHtml}</div>`;
+  p3.style.background=activePillar?aColor:'#1A1814';
+  p3.innerHTML=`<div style="${bgStyle};width:100%;height:100%;display:flex;flex-direction:column;position:relative;z-index:0">${tbarHtml}${stageHtml}</div>`;
 }
 
 function selectTable(i){selectedTable=i;renderPhase3();}
@@ -446,11 +447,19 @@ function showCloud(view){
   let words=[];
   if(view==='all'){
     for(const tableIdx of Object.keys(kws)){
-      words=words.concat(Object.values(kws[tableIdx]));
+      const tableData=kws[tableIdx];
+      if(tableData&&typeof tableData==='object'){
+        words=words.concat(Object.values(tableData));
+      }
     }
   } else {
-    if(kws[view])words=Object.values(kws[view]);
+    const tableData=kws[view]||kws[String(view)];
+    if(tableData&&typeof tableData==='object'){
+      words=Object.values(tableData);
+    }
   }
+  // Flatten in case of nested objects
+  words=words.flat().filter(w=>typeof w==='string'&&w.trim().length>0);
 
   // Update filter buttons
   const views=['all',0,1,2,3];
