@@ -75,7 +75,8 @@ textarea:focus{outline:none;border-color:var(--orange)}
 
 /* ── PHASE 3 FULLSCREEN ── */
 #phase3{position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:1000;display:none;flex-direction:column;isolation:isolate}
-.p3-topbar{height:64px;background:rgba(0,0,0,0.35);display:flex;align-items:center;padding:0 2rem;gap:12px;flex-shrink:0}
+.p3-topbar1{height:64px;background:white;border-bottom:1px solid rgba(0,0,0,0.1);display:flex;align-items:center;padding:0 2rem;justify-content:space-between;flex-shrink:0}
+.p3-topbar{height:56px;background:rgba(0,0,0,0.3);display:flex;align-items:center;padding:0 2rem;gap:12px;flex-shrink:0}
 .p3-table-btns{display:flex;gap:6px}
 .p3-table-btn{padding:6px 16px;border-radius:8px;border:1.5px solid rgba(255,255,255,0.4);background:transparent;font-family:'Poppins',sans-serif;font-size:12px;font-weight:600;color:rgba(255,255,255,0.7);cursor:pointer;transition:all .15s}
 .p3-table-btn.active{background:white;color:var(--ink);border-color:white}
@@ -194,9 +195,16 @@ const app=initializeApp(firebaseConfig);
 const db=getDatabase(app);
 const subsRef=ref(db,'submissions');
 const clustersRef=ref(db,'clusters');
-window._fb={db,ref,push,onValue,remove,set,subsRef,clustersRef};
+const keywordsRef=ref(db,'keywords');
+window._fb={db,ref,push,onValue,remove,set,subsRef,clustersRef,keywordsRef};
 onValue(subsRef,(snap)=>{const data=snap.val();window._renderSubmissions(data?Object.values(data):[]);});
 onValue(clustersRef,(snap)=>{const data=snap.val();if(data){window._clusters=data;window._renderClusters(data);const btn=document.getElementById('to-p3-btn');if(btn)btn.style.display='block';}});
+onValue(keywordsRef,(snap)=>{
+  window._keywords=snap.val()||{};
+  if(typeof showCloud==='function'&&window._currentCloudView!==undefined){
+    showCloud(window._currentCloudView);
+  }
+});
 </script>
 
 <script>
@@ -213,8 +221,8 @@ const PILLARS={
 };
 
 const T={
-  nl:{heroTitle:'Portfolio Boardroom',heroSub:'Shared knowledge. Shared mojo.',p1Title:'Stel je vraag',p1Sub:'Wat is jouw grootste uitdaging of vraag rondom portfolio management?',placeholder:'Typ hier je vraag of uitdaging...',submitLabel:'Indienen',toastDone:'Ingediend! Voeg gerust nog een vraag toe.',subsLabel:'Inzendingen',emptyMsg:'Nog geen inzendingen',toP2:'Naar fase 2 — Clusteren →',p2Title:'Clusteren',p2Sub:'Claude verdeelt de inzendingen over de 6 Mojeo-pijlers.',clusterLabel:'Clusteren met Claude',clustering:'Bezig met analyseren...',toP3:'Naar fase 3 — Tafels →',p3Title:'Tafels',p3Sub:'Kies je tafel, selecteer een pijler en genereer een startvraag.',back1:'Terug naar fase 1',back2:'Terug naar fase 2',back3:'Terug naar tafels',reset:'Sessie resetten',errorMin:'Voeg minimaal 3 vragen toe voordat je clustert.',errorApi:'Fout bij verbinding met Claude. Probeer opnieuw.',sl0:'Verzamelen',sl1:'Clusteren',sl2:'Tafels',sl3:'Afronding',confirmReset:'Weet je zeker dat je de sessie wilt resetten? Alle data wordt gewist.',tableLabel:n=>`Tafel ${n}`,choosePillar:'Kies een pijler',generateQ:'Genereer een vraag',newQ:'Andere vraag',noQuestions:'Geen vragen voor deze pijler.',noClusters:'Voer eerst clustering uit in fase 2.',keywordsPlaceholder:'bijv. samenwerking, prioriteit, helderheid',keywordsLabel:'Kernwoorden (komma-gescheiden)',addKeywords:'Opslaan',keywordsToast:'Kernwoorden opgeslagen!',endSession:'Eindafronding',p4Title:'Eindafronding',p4Sub:'Wordcloud van alle kernwoorden.',back3:'Terug naar tafels',allTables:'Alle tafels'},
-  en:{heroTitle:'Portfolio Boardroom',heroSub:'Shared knowledge. Shared mojo.',p1Title:'Submit your question',p1Sub:'What is your biggest challenge or question around portfolio management?',placeholder:'Type your question or challenge here...',submitLabel:'Submit',toastDone:'Submitted! Feel free to add another question.',subsLabel:'Submissions',emptyMsg:'No submissions yet',toP2:'Go to phase 2 — Cluster →',p2Title:'Clustering',p2Sub:'Claude assigns submissions to the 6 Mojeo pillars.',clusterLabel:'Cluster with Claude',clustering:'Analysing...',toP3:'Go to phase 3 — Tables →',p3Title:'Tables',p3Sub:'Choose your table, select a pillar and generate a question.',back1:'Back to phase 1',back2:'Back to phase 2',back3:'Back to tables',reset:'Reset session',errorMin:'Add at least 3 questions before clustering.',errorApi:'Error connecting to Claude. Please try again.',sl0:'Collect',sl1:'Cluster',sl2:'Tables',sl3:'Wrap-up',confirmReset:'Are you sure you want to reset the session? All data will be deleted.',tableLabel:n=>`Table ${n}`,choosePillar:'Choose a pillar',generateQ:'Generate a question',newQ:'New question',noQuestions:'No questions for this pillar.',noClusters:'Please run clustering in phase 2 first.',keywordsPlaceholder:'e.g. collaboration, priority, clarity',keywordsLabel:'Keywords (comma-separated)',addKeywords:'Save',keywordsToast:'Keywords saved!',endSession:'Final wrap-up',p4Title:'Final wrap-up',p4Sub:'Word cloud of all keywords.',back3:'Back to tables',allTables:'All tables'}
+  nl:{heroTitle:'Portfolio Boardroom',heroSub:'Shared knowledge. Shared mojo.',p1Title:'Stel je vraag',p1Sub:'Wat is jouw grootste uitdaging of vraag rondom portfolio management?',placeholder:'Typ hier je vraag of uitdaging...',submitLabel:'Indienen',toastDone:'Ingediend! Voeg gerust nog een vraag toe.',subsLabel:'Inzendingen',emptyMsg:'Nog geen inzendingen',toP2:'Naar fase 2 — Clusteren →',p2Title:'Clusteren',p2Sub:'Claude verdeelt de inzendingen over de 6 Mojeo-pijlers.',clusterLabel:'Clusteren met Claude',clustering:'Bezig met analyseren...',toP3:'Naar fase 3 — Tafels →',p3Title:'Tafels',p3Sub:'Kies je tafel, selecteer een pijler en genereer een startvraag.',back1:'Terug naar fase 1',back2:'Terug naar fase 2',back3:'Terug naar tafels',reset:'Sessie resetten',errorMin:'Voeg minimaal 3 vragen toe voordat je clustert.',errorApi:'Fout bij verbinding met Claude. Probeer opnieuw.',sl0:'Verzamelen',sl1:'Clusteren',sl2:'Tafels',sl3:'Afronding',confirmReset:'Weet je zeker dat je de sessie wilt resetten? Alle data wordt gewist.',tableLabel:n=>`Tafel ${n}`,choosePillar:'Kies een pijler',generateQ:'Genereer een vraag',newQ:'Andere vraag',noQuestions:'Geen vragen voor deze pijler.',noClusters:'Voer eerst clustering uit in fase 2.',keywordsPlaceholder:'bijv. samenwerking, prioriteit, helderheid',keywordsLabel:'Kernwoorden (komma-gescheiden)',addKeywords:'Opslaan',keywordsToast:'Kernwoorden opgeslagen!',keywordsBtn:'+ Kernwoorden',endSession:'Eindafronding',p4Title:'Eindafronding',p4Sub:'Wordcloud van alle kernwoorden.',back3:'Terug naar tafels',allTables:'Alle tafels'},
+  en:{heroTitle:'Portfolio Boardroom',heroSub:'Shared knowledge. Shared mojo.',p1Title:'Submit your question',p1Sub:'What is your biggest challenge or question around portfolio management?',placeholder:'Type your question or challenge here...',submitLabel:'Submit',toastDone:'Submitted! Feel free to add another question.',subsLabel:'Submissions',emptyMsg:'No submissions yet',toP2:'Go to phase 2 — Cluster →',p2Title:'Clustering',p2Sub:'Claude assigns submissions to the 6 Mojeo pillars.',clusterLabel:'Cluster with Claude',clustering:'Analysing...',toP3:'Go to phase 3 — Tables →',p3Title:'Tables',p3Sub:'Choose your table, select a pillar and generate a question.',back1:'Back to phase 1',back2:'Back to phase 2',back3:'Back to tables',reset:'Reset session',errorMin:'Add at least 3 questions before clustering.',errorApi:'Error connecting to Claude. Please try again.',sl0:'Collect',sl1:'Cluster',sl2:'Tables',sl3:'Wrap-up',confirmReset:'Are you sure you want to reset the session? All data will be deleted.',tableLabel:n=>`Table ${n}`,choosePillar:'Choose a pillar',generateQ:'Generate a question',newQ:'New question',noQuestions:'No questions for this pillar.',noClusters:'Please run clustering in phase 2 first.',keywordsPlaceholder:'e.g. collaboration, priority, clarity',keywordsLabel:'Keywords (comma-separated)',addKeywords:'Save',keywordsToast:'Keywords saved!',keywordsBtn:'+ Keywords',endSession:'Final wrap-up',p4Title:'Final wrap-up',p4Sub:'Word cloud of all keywords.',back3:'Back to tables',allTables:'All tables'}
 };
 
 function t(k,...args){const v=T[lang][k];return typeof v==='function'?v(...args):v;}
@@ -269,8 +277,16 @@ function goBack(p){setPhase(p);}
 function goPhase4(){setPhase(4);}
 
 function getBgStyle(color){
-  // Darken slightly for readability while keeping solid
-  return `background: linear-gradient(160deg, ${color} 0%, ${color}ee 60%, ${color}bb 100%)`;
+  // Mojeo gradient: pillar color blends toward magenta/orange
+  const blends={
+    '#FF3300':'linear-gradient(135deg,#FF3300 0%,#FF0055 50%,#FF6600 100%)',
+    '#E91E8C':'linear-gradient(135deg,#E91E8C 0%,#FF3300 60%,#FF6600 100%)',
+    '#9B59B6':'linear-gradient(135deg,#9B59B6 0%,#E91E8C 55%,#FF3300 100%)',
+    '#2980B9':'linear-gradient(135deg,#2980B9 0%,#9B59B6 55%,#E91E8C 100%)',
+    '#16A085':'linear-gradient(135deg,#16A085 0%,#2980B9 50%,#9B59B6 100%)',
+    '#F4B900':'linear-gradient(135deg,#F4B900 0%,#FF6600 50%,#FF3300 100%)'
+  };
+  return `background:${blends[color]||`linear-gradient(135deg,${color} 0%,#FF0055 60%,#FF6600 100%)`}`;
 }
 
 function renderPhase3(){
@@ -288,10 +304,20 @@ function renderPhase3(){
   const aColor=activePillar?pillarColor(activePillar):'#1A1814';
   const bgStyle=activePillar?getBgStyle(aColor):'background:#1A1814';
 
-  // Topbar
-  let tbarHtml=`<div class="p3-topbar">
-    <svg style="height:28px;width:auto;flex-shrink:0;margin-right:8px" viewBox="0 0 130 36" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="lg2" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" style="stop-color:#FF3300"/><stop offset="50%" style="stop-color:#FF0066"/><stop offset="100%" style="stop-color:#FF6600"/></linearGradient></defs><text x="0" y="30" font-family="Poppins,sans-serif" font-weight="800" font-size="32" fill="url(#lg2)">MOJEO</text></svg>
-    <div class="p3-divider"></div>
+  // Topbar 1 — Mojeo brand bar (white)
+  let tbarHtml=`<div class="p3-topbar1">
+    <svg style="height:28px;width:auto" viewBox="0 0 130 36" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="lg2" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" style="stop-color:#FF3300"/><stop offset="50%" style="stop-color:#FF0066"/><stop offset="100%" style="stop-color:#FF6600"/></linearGradient></defs><text x="0" y="30" font-family="Poppins,sans-serif" font-weight="800" font-size="32" fill="url(#lg2)">MOJEO</text></svg>
+    <div style="display:flex;align-items:center;gap:8px">
+      <button onclick="goBack(2)" style="padding:6px 14px;border-radius:8px;border:1px solid rgba(0,0,0,0.15);background:transparent;font-family:Poppins,sans-serif;font-size:12px;font-weight:500;cursor:pointer;color:#6B6760">← ${t('back2')}</button>
+      <div style="display:flex;gap:3px;background:#F7F5F0;border:1px solid rgba(0,0,0,0.1);border-radius:7px;padding:3px">
+        <button onclick="setLang('nl')" style="padding:4px 12px;border-radius:5px;border:none;font-family:Poppins,sans-serif;font-size:11px;font-weight:700;cursor:pointer;background:${lang==='nl'?'#FF3300':'transparent'};color:${lang==='nl'?'white':'#6B6760'}">NL</button>
+        <button onclick="setLang('en')" style="padding:4px 12px;border-radius:5px;border:none;font-family:Poppins,sans-serif;font-size:11px;font-weight:700;cursor:pointer;background:${lang==='en'?'#FF3300':'transparent'};color:${lang==='en'?'white':'#6B6760'}">EN</button>
+      </div>
+    </div>
+  </div>`;
+
+  // Topbar 2 — table & pillar navigation (colored)
+  tbarHtml+=`<div class="p3-topbar">
     <div class="p3-table-btns">`;
   for(let i=0;i<4;i++)tbarHtml+=`<button class="p3-table-btn ${i===selectedTable?'active':''}" onclick="selectTable(${i})">${t('tableLabel',i+1)}</button>`;
   tbarHtml+=`</div><div class="p3-divider"></div><div class="p3-pillar-btns">`;
@@ -299,15 +325,7 @@ function renderPhase3(){
     const isA=activePillar===p.key;
     tbarHtml+=`<button class="p3-pillar-btn ${isA?'active':''}" onclick="selectPillar('${p.key}')">${p.key}</button>`;
   });
-  tbarHtml+=`</div>
-    <div style="margin-left:auto;display:flex;align-items:center;gap:6px;flex-shrink:0">
-      <button class="p3-back-btn" style="margin-left:0" onclick="goBack(2)">← ${t('back2')}</button>
-      <div style="display:flex;gap:3px;background:rgba(255,255,255,0.15);border-radius:7px;padding:3px">
-        <button onclick="setLang('nl')" style="padding:4px 10px;border-radius:5px;border:none;font-family:Poppins,sans-serif;font-size:11px;font-weight:700;cursor:pointer;background:${lang==='nl'?'white':'transparent'};color:${lang==='nl'?'#1A1814':'rgba(255,255,255,0.7)'}">NL</button>
-        <button onclick="setLang('en')" style="padding:4px 10px;border-radius:5px;border:none;font-family:Poppins,sans-serif;font-size:11px;font-weight:700;cursor:pointer;background:${lang==='en'?'white':'transparent'};color:${lang==='en'?'#1A1814':'rgba(255,255,255,0.7)'}">EN</button>
-      </div>
-    </div>
-  </div>`;
+  tbarHtml+=`</div></div>`;
 
   // Stage
   let stageHtml=`<div class="p3-stage">`;
@@ -326,12 +344,13 @@ function renderPhase3(){
       <div class="p3-pillar-label">${activePillar}</div>
       <div class="p3-question-text">${escHtml(activeQuestion)}</div>
     </div>
-    <div style="margin-top:1.5rem;display:flex;gap:8px;max-width:560px;width:100%;padding:0 1rem">
+    <div id="kw-panel-${selectedTable}" style="display:none;margin-top:1rem;flex-direction:row;gap:8px;max-width:560px;width:100%;padding:0 1rem">
       <input type="text" id="kw-input-${selectedTable}" placeholder="${t('keywordsPlaceholder')}" style="flex:1;border-radius:10px;border:2px solid rgba(255,255,255,0.5);background:rgba(255,255,255,0.18);color:white;font-family:Poppins,sans-serif;font-size:14px;padding:11px 16px" onkeydown="if(event.key==='Enter')saveKeywords()">
       <button class="p3-action-btn primary" style="margin:0;padding:11px 18px;flex-shrink:0;white-space:nowrap" onclick="saveKeywords()">${t('addKeywords')}</button>
     </div>
     <div class="p3-actions">
       <button class="p3-action-btn" onclick="generateQuestion()">${t('newQ')}</button>
+      <button class="p3-action-btn" onclick="toggleKwPanel(${selectedTable})" id="kw-toggle-${selectedTable}">${t('keywordsBtn')}</button>
       <button class="p3-action-btn" onclick="goPhase4()" style="border-color:rgba(255,255,255,0.6)">${t('endSession')}</button>
     </div>`;
   }
@@ -421,13 +440,26 @@ window._renderClusters=function(clusters){
   document.getElementById('cluster-output').innerHTML=html;
 };
 
+function toggleKwPanel(tableIdx){
+  const panel=document.getElementById('kw-panel-'+tableIdx);
+  const btn=document.getElementById('kw-toggle-'+tableIdx);
+  if(!panel)return;
+  const isOpen=panel.style.display==='flex';
+  panel.style.display=isOpen?'none':'flex';
+  if(btn)btn.style.background=isOpen?'':'rgba(255,255,255,0.25)';
+  if(!isOpen){
+    const input=document.getElementById('kw-input-'+tableIdx);
+    if(input)setTimeout(()=>input.focus(),50);
+  }
+}
+
 async function saveKeywords(){
   const input=document.getElementById('kw-input-'+selectedTable);
   if(!input||!input.value.trim())return;
   const words=input.value.split(',').map(w=>w.trim()).filter(w=>w.length>0);
   if(words.length===0)return;
   const {push,ref,db}=window._fb;
-  const kwRef=ref(db,'keywords/'+selectedTable);
+  const kwRef=ref(db,'keywords/'+String(selectedTable));
   for(const word of words){await push(kwRef,word);}
   input.value='';
   // Show toast
