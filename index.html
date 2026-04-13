@@ -168,20 +168,25 @@ textarea:focus{outline:none;border-color:var(--orange)}
 
   <div id="phase3" style="display:none"></div>
 
-  <div id="phase4" style="display:none">
-    <div class="card">
-      <div class="card-title" id="p4-title">Eindafronding</div>
-      <div class="card-sub" id="p4-sub">Wordcloud van alle kernwoorden.</div>
-      <div style="display:flex;gap:8px;margin-bottom:1rem" id="p4-filter">
-        <button class="btn btn-dark" onclick="showCloud('all')" id="cloud-all-btn" style="margin-top:0">Alle tafels</button>
-        <button class="btn btn-ghost" onclick="showCloud(0)" id="cloud-t1-btn" style="margin-top:0">Tafel 1</button>
-        <button class="btn btn-ghost" onclick="showCloud(1)" id="cloud-t2-btn" style="margin-top:0">Tafel 2</button>
-        <button class="btn btn-ghost" onclick="showCloud(2)" id="cloud-t3-btn" style="margin-top:0">Tafel 3</button>
-        <button class="btn btn-ghost" onclick="showCloud(3)" id="cloud-t4-btn" style="margin-top:0">Tafel 4</button>
+  <div id="phase4" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:1000;flex-direction:column;background:linear-gradient(150deg,#ffffff 0%,#fff5f0 50%,#fff8e0 100%)">
+    <!-- P4 topbar -->
+    <div style="height:64px;background:white;border-bottom:1px solid rgba(0,0,0,0.08);display:flex;align-items:center;padding:0 2rem;justify-content:space-between;flex-shrink:0">
+      <svg style="height:28px;width:auto" viewBox="0 0 130 36" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="lg3" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" style="stop-color:#FF3300"/><stop offset="50%" style="stop-color:#FF0066"/><stop offset="100%" style="stop-color:#FF6600"/></linearGradient></defs><text x="0" y="30" font-family="Poppins,sans-serif" font-weight="800" font-size="32" fill="url(#lg3)">MOJEO</text></svg>
+      <div style="display:flex;align-items:center;gap:8px">
+        <div style="display:flex;gap:6px" id="p4-filter">
+          <button onclick="showCloud('all')" id="cloud-all-btn" style="padding:6px 14px;border-radius:8px;border:1.5px solid #FF3300;background:#FF3300;color:white;font-family:Poppins,sans-serif;font-size:12px;font-weight:600;cursor:pointer">Alle tafels</button>
+          <button onclick="showCloud(0)" id="cloud-t1-btn" style="padding:6px 14px;border-radius:8px;border:1.5px solid rgba(0,0,0,0.15);background:transparent;color:#6B6760;font-family:Poppins,sans-serif;font-size:12px;font-weight:600;cursor:pointer">Tafel 1</button>
+          <button onclick="showCloud(1)" id="cloud-t2-btn" style="padding:6px 14px;border-radius:8px;border:1.5px solid rgba(0,0,0,0.15);background:transparent;color:#6B6760;font-family:Poppins,sans-serif;font-size:12px;font-weight:600;cursor:pointer">Tafel 2</button>
+          <button onclick="showCloud(2)" id="cloud-t3-btn" style="padding:6px 14px;border-radius:8px;border:1.5px solid rgba(0,0,0,0.15);background:transparent;color:#6B6760;font-family:Poppins,sans-serif;font-size:12px;font-weight:600;cursor:pointer">Tafel 3</button>
+          <button onclick="showCloud(3)" id="cloud-t4-btn" style="padding:6px 14px;border-radius:8px;border:1.5px solid rgba(0,0,0,0.15);background:transparent;color:#6B6760;font-family:Poppins,sans-serif;font-size:12px;font-weight:600;cursor:pointer">Tafel 4</button>
+        </div>
+        <button onclick="goBack(3)" style="padding:6px 14px;border-radius:8px;border:1px solid rgba(0,0,0,0.15);background:transparent;font-family:Poppins,sans-serif;font-size:12px;font-weight:500;cursor:pointer;color:#6B6760">← <span id="back3-label">Terug naar tafels</span></button>
       </div>
-      <div id="wordcloud-container" style="min-height:300px;display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:center;padding:1.5rem;background:var(--bg);border-radius:12px"></div>
     </div>
-    <button class="btn btn-ghost" onclick="goBack(3)" style="margin-top:0">← <span id="back3-label">Terug naar tafels</span></button>
+    <!-- Wordcloud stage -->
+    <div style="flex:1;display:flex;align-items:center;justify-content:center;padding:3rem 4rem">
+      <div id="wordcloud-container" style="display:flex;flex-wrap:wrap;gap:16px 24px;align-items:center;justify-content:center;max-width:1100px;width:100%"></div>
+    </div>
   </div>
 
   <div class="reset-link" onclick="resetSession()" id="reset-link" style="display:none">Sessie resetten</div>
@@ -256,7 +261,8 @@ function setPhase(p){
   currentPhase=p;
   document.getElementById('phase1').style.display=p===1?'block':'none';
   document.getElementById('phase2').style.display=p===2?'block':'none';
-  document.getElementById('phase4').style.display=p===4?'block':'none';
+  const p4=document.getElementById('phase4');
+  if(p===4){p4.style.display='flex';}else{p4.style.display='none';}
   const p3=document.getElementById('phase3');
   if(p===3){
     p3.style.display='flex';
@@ -499,8 +505,10 @@ function showCloud(view){
   views.forEach((v,i)=>{
     const btn=document.getElementById(ids[i]);
     if(!btn)return;
-    btn.className=v===view?'btn btn-dark':'btn btn-ghost';
-    btn.style.marginTop='0';
+    const isActive=v===view;
+    btn.style.background=isActive?'#FF3300':'transparent';
+    btn.style.color=isActive?'white':'#6B6760';
+    btn.style.borderColor=isActive?'#FF3300':'rgba(0,0,0,0.15)';
   });
 
   // Count word frequencies
@@ -514,19 +522,20 @@ function showCloud(view){
   if(!container)return;
 
   if(Object.keys(freq).length===0){
-    container.innerHTML=`<div style="color:var(--ink-faint);font-size:14px;text-align:center;width:100%;padding:2rem">Nog geen kernwoorden ingevoerd.</div>`;
+    container.innerHTML=`<div style="color:#B0ADA8;font-size:18px;font-weight:500;text-align:center;width:100%;padding:4rem;font-family:Poppins,sans-serif">Nog geen kernwoorden ingevoerd.</div>`;
     return;
   }
 
   const maxFreq=Math.max(...Object.values(freq));
-  const PILLAR_COLORS=['#FF3300','#E91E8C','#9B59B6','#2980B9','#16A085','#F4B900'];
+  const MOJEO_COLORS=['#FF3300','#FF0066','#F4B900','#FF6600','#E91E8C','#FF3300','#F4B900','#FF0066'];
   const entries=Object.entries(freq).sort((a,b)=>b[1]-a[1]);
 
   container.innerHTML=entries.map(([word,count],i)=>{
-    const size=Math.round(14+(count/maxFreq)*36);
-    const color=PILLAR_COLORS[i%PILLAR_COLORS.length];
-    const weight=count>1?700:500;
-    return `<span style="font-size:${size}px;font-weight:${weight};color:${color};padding:4px 8px;cursor:default;transition:transform .15s;display:inline-block" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='none'">${escHtml(word)}</span>`;
+    const minSize=22, maxSize=80;
+    const size=Math.round(minSize+(count/maxFreq)*(maxSize-minSize));
+    const color=MOJEO_COLORS[i%MOJEO_COLORS.length];
+    const weight=size>45?800:700;
+    return `<span style="font-size:${size}px;font-weight:${weight};color:${color};line-height:1.1;cursor:default;transition:transform .2s;display:inline-block;font-family:Poppins,sans-serif" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='none'">${escHtml(word)}</span>`;
   }).join('');
 }
 
