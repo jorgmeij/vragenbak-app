@@ -3,881 +3,359 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mojeo Mingle</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<title>Portfolio Boardroom — Mojeo</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #F5F2EC;
-    --surface: #FDFBF7;
-    --ink: #1A1814;
-    --ink-muted: #6B6760;
-    --ink-faint: #B0ADA8;
-    --accent: #FF3300;
-    --accent-light: #FFF0ED;
-    --accent2: #F4B900;
-    --gold: #F4B900;
-    --border: rgba(26,24,20,0.12);
-    --radius: 12px;
-  }
-
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-
-  body {
-    background: var(--bg);
-    color: var(--ink);
-    font-family: 'Poppins', sans-serif;
-    font-size: 16px;
-    line-height: 1.6;
-    min-height: 100vh;
-  }
-
-  .app {
-    max-width: 640px;
-    margin: 0 auto;
-    padding: 2rem 1.5rem 4rem;
-  }
-
-  /* Header */
-  .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 2.5rem;
-    padding-bottom: 1.5rem;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .logo {
-    font-family: 'Poppins', sans-serif;
-    font-size: 22px;
-    font-weight: 700;
-    color: #FF3300;
-    line-height: 1.2;
-  }
-
-  .logo span {
-    display: block;
-    font-family: 'Poppins', sans-serif;
-    font-size: 12px;
-    font-weight: 400;
-    color: var(--ink-muted);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    margin-top: 2px;
-  }
-
-  .lang-toggle {
-    display: flex;
-    gap: 4px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 3px;
-  }
-
-  .lang-btn {
-    background: transparent;
-    border: none;
-    border-radius: 6px;
-    padding: 5px 12px;
-    font-size: 12px;
-    font-weight: 500;
-    font-family: 'Poppins', sans-serif;
-    cursor: pointer;
-    color: var(--ink-muted);
-    transition: all 0.15s;
-    letter-spacing: 0.05em;
-  }
-
-  .lang-btn.active {
-    background: var(--ink);
-    color: white;
-  }
-
-  /* Phase stepper */
-  .stepper {
-    display: flex;
-    align-items: center;
-    gap: 0;
-    margin-bottom: 2rem;
-  }
-
-  .step {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    flex: 1;
-  }
-
-  .step-num {
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 12px;
-    font-weight: 500;
-    border: 1.5px solid var(--border);
-    color: var(--ink-muted);
-    background: var(--surface);
-    flex-shrink: 0;
-    transition: all 0.3s;
-  }
-
-  .step-num.active {
-    background: #FF3300;
-    color: white;
-    border-color: #FF3300;
-  }
-
-  .step-num.done {
-    background: var(--ink);
-    color: white;
-    border-color: var(--ink);
-  }
-
-  .step-label {
-    font-size: 12px;
-    color: var(--ink-muted);
-    font-weight: 400;
-    white-space: nowrap;
-  }
-
-  .step-label.active {
-    color: var(--ink);
-    font-weight: 500;
-  }
-
-  .step-line {
-    flex: 1;
-    height: 1px;
-    background: var(--border);
-    margin: 0 8px;
-  }
-
-  /* Cards */
-  .card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 1.5rem;
-    margin-bottom: 1rem;
-  }
-
-  .card-title {
-    font-family: 'Poppins', sans-serif;
-    font-size: 20px;
-    color: var(--ink);
-    margin-bottom: 0.25rem;
-  }
-
-  .card-sub {
-    font-size: 14px;
-    color: var(--ink-muted);
-    margin-bottom: 1.25rem;
-    line-height: 1.5;
-  }
-
-  /* Form elements */
-  textarea, input[type="text"] {
-    width: 100%;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 12px 14px;
-    font-size: 15px;
-    font-family: 'Poppins', sans-serif;
-    background: var(--bg);
-    color: var(--ink);
-    resize: none;
-    transition: border-color 0.15s;
-    line-height: 1.5;
-  }
-
-  textarea:focus, input:focus {
-    outline: none;
-    border-color: #FF3300;
-  }
-
-  textarea { min-height: 90px; }
-
-  /* Buttons */
-  .btn {
-    width: 100%;
-    padding: 12px 20px;
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: 500;
-    font-family: 'Poppins', sans-serif;
-    cursor: pointer;
-    transition: all 0.15s;
-    margin-top: 0.75rem;
-    letter-spacing: 0.01em;
-  }
-
-  .btn-primary {
-    background: #FF3300;
-    color: white;
-    border: none;
-  }
-
-  .btn-primary:hover { background: #cc2900; }
-  .btn-primary:disabled { background: var(--ink-faint); cursor: not-allowed; }
-
-  .btn-outline {
-    background: transparent;
-    color: var(--ink);
-    border: 1px solid var(--border);
-  }
-
-  .btn-outline:hover { background: var(--bg); }
-
-  .btn-dark {
-    background: #1A1814;
-    color: white;
-    border: none;
-  }
-
-  .btn-dark:hover { background: #2d2b27; }
-
-  /* Submissions */
-  .submissions-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 0.75rem;
-    margin-top: 1.25rem;
-    padding-top: 1.25rem;
-    border-top: 1px solid var(--border);
-  }
-
-  .count-pill {
-    background: var(--accent-light);
-    color: var(--accent);
-    border-radius: 20px;
-    padding: 3px 12px;
-    font-size: 13px;
-    font-weight: 500;
-  }
-
-  .submissions-label {
-    font-size: 13px;
-    color: var(--ink-muted);
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-  }
-
-  .submission-list {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    max-height: 220px;
-    overflow-y: auto;
-    margin-bottom: 1rem;
-  }
-
-  .submission-item {
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 10px 14px;
-    font-size: 14px;
-    color: var(--ink);
-    line-height: 1.4;
-    animation: fadeIn 0.2s ease;
-  }
-
-  @keyframes fadeIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
-
-  .success-toast {
-    background: var(--accent-light);
-    color: var(--accent);
-    border-radius: 8px;
-    padding: 10px 14px;
-    font-size: 13px;
-    margin-top: 0.5rem;
-    text-align: center;
-    display: none;
-  }
-
-  /* Clusters */
-  .cluster-block {
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    overflow: hidden;
-    margin-bottom: 0.75rem;
-  }
-
-  .cluster-header {
-    background: var(--bg);
-    padding: 10px 14px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-
-  .cluster-num {
-    width: 22px;
-    height: 22px;
-    border-radius: 50%;
-    background: var(--ink);
-    color: white;
-    font-size: 11px;
-    font-weight: 500;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-  }
-
-  .cluster-theme {
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--ink);
-  }
-
-  .cluster-questions {
-    padding: 0 14px;
-  }
-
-  .cluster-q-item {
-    font-size: 13px;
-    color: var(--ink-muted);
-    padding: 8px 0;
-    border-bottom: 1px solid var(--border);
-    line-height: 1.4;
-  }
-
-  .cluster-q-item:last-child { border-bottom: none; }
-
-  /* Tables phase */
-  .table-card {
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    overflow: hidden;
-    margin-bottom: 1rem;
-  }
-
-  .table-card-header {
-    padding: 12px 16px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .table-badge {
-    background: var(--ink);
-    color: white;
-    border-radius: 6px;
-    padding: 3px 10px;
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    flex-shrink: 0;
-  }
-
-  .table-theme {
-    font-size: 15px;
-    font-weight: 500;
-    color: var(--ink);
-  }
-
-  .table-question {
-    padding: 14px 16px;
-    font-size: 15px;
-    color: var(--ink);
-    line-height: 1.5;
-    background: var(--surface);
-    font-style: italic;
-  }
-
-  /* Loading */
-  .loading-row {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 1rem 0;
-    color: var(--ink-muted);
-    font-size: 14px;
-  }
-
-  .spinner {
-    width: 18px;
-    height: 18px;
-    border: 2px solid var(--border);
-    border-top-color: var(--accent);
-    border-radius: 50%;
-    animation: spin 0.7s linear infinite;
-    flex-shrink: 0;
-  }
-
-  @keyframes spin { to { transform: rotate(360deg); } }
-
-  .error-msg {
-    background: #FEF2E8;
-    color: var(--accent2);
-    border-radius: 8px;
-    padding: 10px 14px;
-    font-size: 13px;
-    margin-top: 0.75rem;
-  }
-
-  /* Divider */
-  .divider {
-    height: 1px;
-    background: var(--border);
-    margin: 1.25rem 0;
-  }
-
-  /* Reset button */
-  .reset-link {
-    display: block;
-    text-align: center;
-    font-size: 12px;
-    color: var(--ink-faint);
-    cursor: pointer;
-    margin-top: 1.5rem;
-    text-decoration: underline;
-  }
-
-  .reset-link:hover { color: var(--ink-muted); }
-
-  /* Responsive */
-  @media (max-width: 480px) {
-    .step-label { display: none; }
-    .app { padding: 1.25rem 1rem 3rem; }
-  }
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--orange:#FF3300;--yellow:#F4B900;--ink:#1A1814;--ink-muted:#6B6760;--ink-faint:#B0ADA8;--bg:#F7F5F0;--surface:#FFFFFF;--border:rgba(26,24,20,0.10);--radius:14px}
+body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--ink);min-height:100vh}
+.topbar{background:white;border-bottom:1px solid var(--border);padding:0 2rem;height:64px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10}
+.logo-svg{height:32px;width:auto}
+.lang-toggle{display:flex;gap:4px;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:3px}
+.lang-btn{background:transparent;border:none;border-radius:6px;padding:5px 14px;font-size:12px;font-weight:600;font-family:'Poppins',sans-serif;cursor:pointer;color:var(--ink-muted);transition:all .15s;letter-spacing:.05em}
+.lang-btn.active{background:var(--orange);color:white}
+.hero{background:linear-gradient(135deg,#FF3300 0%,#FF0066 45%,#FF6600 100%);padding:3rem 2rem 3.5rem;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-60px;right:-60px;width:220px;height:220px;border-radius:50%;background:rgba(255,255,255,0.06)}
+.hero::after{content:'';position:absolute;bottom:-80px;left:-40px;width:280px;height:280px;border-radius:50%;background:rgba(255,255,255,0.05)}
+.hero-title{font-size:clamp(28px,5vw,42px);font-weight:800;color:white;line-height:1.1;letter-spacing:-.02em;position:relative;z-index:1}
+.hero-sub{font-size:15px;color:rgba(255,255,255,0.8);margin-top:.5rem;font-weight:400;position:relative;z-index:1;letter-spacing:.01em}
+.main{max-width:680px;margin:0 auto;padding:2rem 1.5rem 5rem}
+.stepper{display:flex;align-items:center;margin-bottom:2rem}
+.step{display:flex;align-items:center;gap:8px;flex:1}
+.step-num{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;border:2px solid var(--border);color:var(--ink-muted);background:white;flex-shrink:0;transition:all .2s}
+.step-num.active{background:var(--orange);color:white;border-color:var(--orange);box-shadow:0 4px 12px rgba(255,51,0,.3)}
+.step-num.done{background:var(--ink);color:white;border-color:var(--ink)}
+.step-label{font-size:12px;color:var(--ink-muted);font-weight:500}
+.step-label.active{color:var(--orange);font-weight:600}
+.step-line{flex:1;height:2px;background:var(--border);margin:0 8px}
+.card{background:white;border:1px solid var(--border);border-radius:var(--radius);padding:1.75rem;margin-bottom:1rem;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.card-title{font-size:20px;font-weight:700;color:var(--ink);margin-bottom:.35rem}
+.card-sub{font-size:14px;color:var(--ink-muted);margin-bottom:1.25rem;line-height:1.55}
+textarea{width:100%;border:2px solid var(--border);border-radius:10px;padding:14px 16px;font-size:15px;font-family:'Poppins',sans-serif;background:var(--bg);color:var(--ink);resize:none;min-height:100px;transition:border-color .15s;line-height:1.5}
+textarea:focus{outline:none;border-color:var(--orange)}
+.btn{width:100%;padding:13px 20px;border-radius:10px;font-size:14px;font-weight:600;font-family:'Poppins',sans-serif;cursor:pointer;transition:all .15s;margin-top:.75rem;letter-spacing:.01em;border:none}
+.btn-orange{background:var(--orange);color:white}
+.btn-orange:hover{background:#cc2900;transform:translateY(-1px);box-shadow:0 4px 12px rgba(255,51,0,.3)}
+.btn-orange:disabled{background:var(--ink-faint);cursor:not-allowed;transform:none;box-shadow:none}
+.btn-dark{background:var(--ink);color:white}
+.btn-dark:hover{background:#2d2b27}
+.btn-ghost{background:transparent;color:var(--ink-muted);border:2px solid var(--border)!important}
+.btn-ghost:hover{background:var(--bg);color:var(--ink)}
+.subs-header{display:flex;justify-content:space-between;align-items:center;padding-top:1.25rem;margin-top:1.25rem;border-top:1px solid var(--border);margin-bottom:.75rem}
+.subs-label{font-size:11px;font-weight:700;color:var(--ink-muted);text-transform:uppercase;letter-spacing:.08em}
+.count-pill{background:#FFF0ED;color:var(--orange);border-radius:20px;padding:3px 12px;font-size:13px;font-weight:700}
+.sub-list{display:flex;flex-direction:column;gap:6px;max-height:200px;overflow-y:auto;margin-bottom:1rem}
+.sub-item{background:var(--bg);border-radius:8px;padding:10px 14px;font-size:14px;color:var(--ink);line-height:1.4;animation:fadeUp .2s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+.toast{background:#F0FDF4;color:#166534;border-radius:8px;padding:10px 14px;font-size:13px;margin-top:.5rem;text-align:center;display:none;font-weight:500}
+.cluster-block{border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:.75rem}
+.cluster-header{background:var(--bg);padding:10px 14px;display:flex;align-items:center;gap:10px}
+.cluster-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.cluster-theme-label{font-size:13px;font-weight:600;color:var(--ink)}
+.cluster-q{font-size:13px;color:var(--ink-muted);padding:8px 14px;border-top:1px solid var(--border);line-height:1.4}
+.table-selector{display:flex;gap:8px;margin-bottom:1.25rem;flex-wrap:wrap}
+.table-btn{flex:1;min-width:60px;padding:10px 8px;border-radius:10px;border:2px solid var(--border);background:white;font-family:'Poppins',sans-serif;font-size:13px;font-weight:600;color:var(--ink-muted);cursor:pointer;transition:all .15s;text-align:center}
+.table-btn.active{border-color:var(--orange);background:#FFF0ED;color:var(--orange);box-shadow:0 2px 8px rgba(255,51,0,.15)}
+.table-btn:hover:not(.active){border-color:var(--ink-faint);color:var(--ink)}
+.pillar-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:1.25rem}
+.pillar-btn{padding:12px 8px;border-radius:10px;border:2px solid var(--border);background:white;font-family:'Poppins',sans-serif;font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;text-align:center;color:var(--ink-muted);display:flex;align-items:center;justify-content:center;gap:6px;flex-direction:column}
+.pillar-dot{width:10px;height:10px;border-radius:50%}
+.pillar-btn.active{border-width:2px;color:white;box-shadow:0 4px 12px rgba(0,0,0,.15)}
+.question-display{border-radius:12px;padding:1.5rem;margin-bottom:1rem;border-left:4px solid var(--orange)}
+.question-display p{font-size:17px;font-weight:500;color:var(--ink);line-height:1.55;font-style:italic}
+.question-meta{font-size:12px;color:var(--ink-faint);margin-top:.5rem;font-weight:500}
+.no-clusters-msg{text-align:center;padding:2rem;color:var(--ink-muted);font-size:14px}
+.error-msg{background:#FEF2E8;color:#993300;border-radius:8px;padding:10px 14px;font-size:13px;margin-top:.75rem}
+.reset-link{display:block;text-align:center;font-size:12px;color:var(--ink-faint);cursor:pointer;margin-top:2rem;text-decoration:underline}
+.reset-link:hover{color:var(--ink-muted)}
+.section-label{font-size:11px;font-weight:700;color:var(--ink-muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.6rem}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,0.3);border-top-color:white;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:8px}
+@media(max-width:500px){.hero{padding:2rem 1.25rem 2.5rem}.main{padding:1.5rem 1rem 4rem}.step-label{display:none}.pillar-grid{grid-template-columns:repeat(2,1fr)}.topbar{padding:0 1rem}}
 </style>
 </head>
 <body>
-<div class="app">
-  <div class="header">
-    <div class="logo">
-      Mojeo Mingle
-      <span id="logo-sub">Shared knowledge. Shared mojo.</span>
-    </div>
-    <div class="lang-toggle">
-      <button class="lang-btn active" onclick="setLang('nl')" id="btn-nl">NL</button>
-      <button class="lang-btn" onclick="setLang('en')" id="btn-en">EN</button>
-    </div>
+<div class="topbar">
+  <svg class="logo-svg" viewBox="0 0 130 36" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="lg" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" style="stop-color:#FF3300"/>
+        <stop offset="50%" style="stop-color:#FF0066"/>
+        <stop offset="100%" style="stop-color:#FF6600"/>
+      </linearGradient>
+    </defs>
+    <text x="0" y="30" font-family="Poppins,sans-serif" font-weight="800" font-size="32" fill="url(#lg)">MOJEO</text>
+  </svg>
+  <div class="lang-toggle">
+    <button class="lang-btn active" onclick="setLang('nl')" id="btn-nl">NL</button>
+    <button class="lang-btn" onclick="setLang('en')" id="btn-en">EN</button>
+  </div>
+</div>
+
+<div class="hero">
+  <div class="hero-title" id="hero-title">Portfolio Boardroom</div>
+  <div class="hero-sub" id="hero-sub">Shared knowledge. Shared mojo.</div>
+</div>
+
+<div class="main">
+  <div class="stepper" id="stepper" style="display:none">
+    <div class="step"><div class="step-num active" id="sn0">1</div><div class="step-label active" id="sl0">Verzamelen</div></div>
+    <div class="step-line"></div>
+    <div class="step"><div class="step-num" id="sn1">2</div><div class="step-label" id="sl1">Clusteren</div></div>
+    <div class="step-line"></div>
+    <div class="step"><div class="step-num" id="sn2">3</div><div class="step-label" id="sl2">Tafels</div></div>
   </div>
 
-  <div class="stepper" id="stepper">
-    <div class="step">
-      <div class="step-num active" id="sn0">1</div>
-      <div class="step-label active" id="sl0" data-nl="Verzamelen" data-en="Collect">Verzamelen</div>
-    </div>
-    <div class="step-line"></div>
-    <div class="step">
-      <div class="step-num" id="sn1">2</div>
-      <div class="step-label" id="sl1" data-nl="Clusteren" data-en="Cluster">Clusteren</div>
-    </div>
-    <div class="step-line"></div>
-    <div class="step">
-      <div class="step-num" id="sn2">3</div>
-      <div class="step-label" id="sl2" data-nl="Tafels" data-en="Tables">Tafels</div>
-    </div>
-  </div>
-
-  <!-- Phase 1 -->
   <div id="phase1">
     <div class="card">
       <div class="card-title" id="p1-title">Stel je vraag</div>
       <div class="card-sub" id="p1-sub">Wat is jouw grootste uitdaging of vraag rondom portfolio management?</div>
       <textarea id="q-input" placeholder="Typ hier je vraag of uitdaging..." rows="3"></textarea>
-      <div class="success-toast" id="toast"></div>
-      <button class="btn btn-primary" onclick="submitQuestion()" id="submit-btn">
-        <span id="submit-label">Indienen</span>
-      </button>
+      <div class="toast" id="toast"></div>
+      <button class="btn btn-orange" onclick="submitQuestion()" id="submit-btn"><span id="submit-label">Indienen</span></button>
     </div>
-
     <div class="card">
-      <div class="submissions-header">
-        <div class="submissions-label" id="subs-label">Inzendingen</div>
+      <div class="subs-header">
+        <div class="subs-label" id="subs-label">Inzendingen</div>
         <div class="count-pill" id="count-pill">0</div>
       </div>
-      <div class="submission-list" id="sub-list" style="display:none">
+      <div class="sub-list" id="sub-list" style="display:none">
         <div style="font-size:14px;color:var(--ink-faint);text-align:center;padding:1rem 0" id="empty-msg">Nog geen inzendingen</div>
       </div>
-      <div class="divider" id="mod-divider" style="display:none"></div>
-      <button class="btn btn-dark" onclick="goPhase2()" id="to-p2-btn" style="display:none">
-        <span id="to-p2-label">Naar fase 2 — Clusteren →</span>
-      </button>
+      <button class="btn btn-dark" onclick="goPhase2()" id="to-p2-btn" style="display:none"><span id="to-p2-label">Naar fase 2 — Clusteren →</span></button>
     </div>
   </div>
 
-  <!-- Phase 2 -->
   <div id="phase2" style="display:none">
     <div class="card">
       <div class="card-title" id="p2-title">Clusteren</div>
-      <div class="card-sub" id="p2-sub">Claude analyseert de inzendingen en groepeert ze naar 3 thema's.</div>
-      <button class="btn btn-primary" onclick="clusterQuestions()" id="cluster-btn">
-        <span id="cluster-label">Clusteren met Claude</span>
-      </button>
+      <div class="card-sub" id="p2-sub">Claude verdeelt de inzendingen over de 6 Mojeo-pijlers.</div>
+      <button class="btn btn-orange" onclick="clusterQuestions()" id="cluster-btn"><span id="cluster-label">Clusteren met Claude</span></button>
       <div id="cluster-output" style="margin-top:1rem"></div>
-      <button class="btn btn-dark" onclick="goPhase3()" id="to-p3-btn" style="display:none;margin-top:1rem">
-        <span id="to-p3-label">Naar fase 3 — Tafels →</span>
-      </button>
+      <button class="btn btn-dark" onclick="goPhase3()" id="to-p3-btn" style="display:none;margin-top:1rem"><span id="to-p3-label">Naar fase 3 — Tafels →</span></button>
     </div>
-    <button class="btn btn-outline" onclick="goBack(1)" id="back1-btn" style="margin-top:0">← <span id="back1-label">Terug naar fase 1</span></button>
+    <button class="btn btn-ghost" onclick="goBack(1)" style="margin-top:0">← <span id="back1-label">Terug naar fase 1</span></button>
   </div>
 
-  <!-- Phase 3 -->
   <div id="phase3" style="display:none">
     <div class="card">
-      <div class="card-title" id="p3-title">Tafelvragen</div>
-      <div class="card-sub" id="p3-sub">Selecteer per tafel een startvraag.</div>
+      <div class="card-title" id="p3-title">Tafels</div>
+      <div class="card-sub" id="p3-sub">Kies je tafel, selecteer een pijler en genereer een startvraag.</div>
+      <div id="p3-content"></div>
     </div>
-    <div id="tables-output"></div>
-    <button class="btn btn-outline" onclick="goBack(2)" id="back2-btn" style="margin-top:0">← <span id="back2-label">Terug naar fase 2</span></button>
+    <button class="btn btn-ghost" onclick="goBack(2)" style="margin-top:0">← <span id="back2-label">Terug naar fase 2</span></button>
   </div>
 
   <div class="reset-link" onclick="resetSession()" id="reset-link" style="display:none">Sessie resetten</div>
 </div>
 
-<!-- Firebase -->
 <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getDatabase, ref, push, onValue, remove, set } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
-
-  const firebaseConfig = {
-    apiKey: "AIzaSyCiViSbkDKXF111ZRbN7WKww6A0fDgB1Fg",
-    authDomain: "vragenbak-app.firebaseapp.com",
-    databaseURL: "https://vragenbak-app-default-rtdb.europe-west1.firebasedatabase.app",
-    projectId: "vragenbak-app",
-    storageBucket: "vragenbak-app.firebasestorage.app",
-    messagingSenderId: "338987639566",
-    appId: "1:338987639566:web:52ac29a76c55cc90356d5f"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const db = getDatabase(app);
-
-  const subsRef = ref(db, 'submissions');
-  const clustersRef = ref(db, 'clusters');
-  const phaseRef = ref(db, 'phase');
-
-  // Expose to window for use in non-module functions
-  window._fb = { db, ref, push, onValue, remove, set, subsRef, clustersRef, phaseRef };
-
-  // Listen to submissions
-  onValue(subsRef, (snap) => {
-    const data = snap.val();
-    const subs = data ? Object.values(data) : [];
-    window._renderSubmissions(subs);
-  });
-
-  // Listen to clusters
-  onValue(clustersRef, (snap) => {
-    const data = snap.val();
-    if (data) {
-      window._clusters = data;
-      window._renderClusters(data);
-      window._renderTables(data);
-      document.getElementById('to-p3-btn').style.display = 'block';
-    }
-  });
-
-  // Phase sync disabled - phase is local only
-  // onValue(phaseRef, ...)
+import{initializeApp}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import{getDatabase,ref,push,onValue,remove,set}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+const firebaseConfig={apiKey:"AIzaSyCiViSbkDKXF111ZRbN7WKww6A0fDgB1Fg",authDomain:"vragenbak-app.firebaseapp.com",databaseURL:"https://vragenbak-app-default-rtdb.europe-west1.firebasedatabase.app",projectId:"vragenbak-app",storageBucket:"vragenbak-app.firebasestorage.app",messagingSenderId:"338987639566",appId:"1:338987639566:web:52ac29a76c55cc90356d5f"};
+const app=initializeApp(firebaseConfig);
+const db=getDatabase(app);
+const subsRef=ref(db,'submissions');
+const clustersRef=ref(db,'clusters');
+window._fb={db,ref,push,onValue,remove,set,subsRef,clustersRef};
+onValue(subsRef,(snap)=>{const data=snap.val();window._renderSubmissions(data?Object.values(data):[]);});
+onValue(clustersRef,(snap)=>{const data=snap.val();if(data){window._clusters=data;window._renderClusters(data);const btn=document.getElementById('to-p3-btn');if(btn)btn.style.display='block';}});
 </script>
 
 <script>
-let lang = 'nl';
-let currentPhase = 1;
-window._clusters = null;
-const isMod = new URLSearchParams(window.location.search).has('mod');
+let lang='nl';
+let currentPhase=1;
+let selectedTable=0;
+window._clusters=null;
+window._tableState={};
+const isMod=new URLSearchParams(window.location.search).has('mod');
 
-const T = {
-  nl: {
-    logoSub: 'Shared knowledge. Shared mojo.',
-    p1Title: 'Stel je vraag',
-    p1Sub: 'Wat is jouw grootste uitdaging of vraag rondom portfolio management?',
-    placeholder: 'Typ hier je vraag of uitdaging...',
-    submitLabel: 'Indienen',
-    toastDone: 'Ingediend! Voeg gerust nog een vraag toe.',
-    subsLabel: 'Inzendingen',
-    emptyMsg: 'Nog geen inzendingen',
-    toP2: 'Naar fase 2 — Clusteren →',
-    p2Title: 'Clusteren',
-    p2Sub: 'Claude analyseert de inzendingen en groepeert ze naar 3 thema\'s.',
-    clusterLabel: 'Clusteren met Claude',
-    clustering: 'Bezig met analyseren...',
-    toP3: 'Naar fase 3 — Tafels →',
-    p3Title: 'Tafelvragen',
-    p3Sub: 'Per tafel één startvraag — gebaseerd op wat de groep inbracht.',
-    tableLabel: (n) => `Tafel ${n}`,
-    back1: 'Terug naar fase 1',
-    back2: 'Terug naar fase 2',
-    reset: 'Sessie resetten',
-    errorMin: 'Voeg minimaal 3 vragen toe voordat je clustert.',
-    errorApi: 'Fout bij verbinding met Claude. Probeer opnieuw.',
-    sl0: 'Verzamelen', sl1: 'Clusteren', sl2: 'Tafels',
-    confirmReset: 'Weet je zeker dat je de sessie wilt resetten? Alle data wordt gewist.'
-  },
-  en: {
-    logoSub: 'Shared knowledge. Shared mojo.',
-    p1Title: 'Submit your question',
-    p1Sub: 'What is your biggest challenge or question around portfolio management?',
-    placeholder: 'Type your question or challenge here...',
-    submitLabel: 'Submit',
-    toastDone: 'Submitted! Feel free to add another question.',
-    subsLabel: 'Submissions',
-    emptyMsg: 'No submissions yet',
-    toP2: 'Go to phase 2 — Cluster →',
-    p2Title: 'Clustering',
-    p2Sub: 'Claude analyses the submissions and groups them into 3 themes.',
-    clusterLabel: 'Cluster with Claude',
-    clustering: 'Analysing...',
-    toP3: 'Go to phase 3 — Tables →',
-    p3Title: 'Table questions',
-    p3Sub: 'One starting question per table — based on what the group submitted.',
-    tableLabel: (n) => `Table ${n}`,
-    back1: 'Back to phase 1',
-    back2: 'Back to phase 2',
-    reset: 'Reset session',
-    errorMin: 'Add at least 3 questions before clustering.',
-    errorApi: 'Error connecting to Claude. Please try again.',
-    sl0: 'Collect', sl1: 'Cluster', sl2: 'Tables',
-    confirmReset: 'Are you sure you want to reset the session? All data will be deleted.'
-  }
+const PILLARS={
+  nl:[{key:'Strategie',color:'#FF3300'},{key:'Governance',color:'#E91E8C'},{key:'Inzicht',color:'#9B59B6'},{key:'Sturing',color:'#2980B9'},{key:'Facilitering',color:'#16A085'},{key:'Cultuur',color:'#F4B900'}],
+  en:[{key:'Strategy',color:'#FF3300'},{key:'Governance',color:'#E91E8C'},{key:'Insight',color:'#9B59B6'},{key:'Steering',color:'#2980B9'},{key:'Facilitation',color:'#16A085'},{key:'Culture',color:'#F4B900'}]
 };
 
-function t(k, ...args) {
-  const v = T[lang][k];
-  return typeof v === 'function' ? v(...args) : v;
+const T={
+  nl:{heroTitle:'Portfolio Boardroom',heroSub:'Shared knowledge. Shared mojo.',p1Title:'Stel je vraag',p1Sub:'Wat is jouw grootste uitdaging of vraag rondom portfolio management?',placeholder:'Typ hier je vraag of uitdaging...',submitLabel:'Indienen',toastDone:'Ingediend! Voeg gerust nog een vraag toe.',subsLabel:'Inzendingen',emptyMsg:'Nog geen inzendingen',toP2:'Naar fase 2 — Clusteren →',p2Title:'Clusteren',p2Sub:'Claude verdeelt de inzendingen over de 6 Mojeo-pijlers.',clusterLabel:'Clusteren met Claude',clustering:'Bezig met analyseren...',toP3:'Naar fase 3 — Tafels →',p3Title:'Tafels',p3Sub:'Kies je tafel, selecteer een pijler en genereer een startvraag.',back1:'Terug naar fase 1',back2:'Terug naar fase 2',reset:'Sessie resetten',errorMin:'Voeg minimaal 3 vragen toe voordat je clustert.',errorApi:'Fout bij verbinding met Claude. Probeer opnieuw.',sl0:'Verzamelen',sl1:'Clusteren',sl2:'Tafels',confirmReset:'Weet je zeker dat je de sessie wilt resetten? Alle data wordt gewist.',tableLabel:n=>`Tafel ${n}`,choosePillar:'Kies een pijler',generateQ:'Genereer een vraag',newQ:'Andere vraag',noQuestions:'Geen vragen voor deze pijler.',noClusters:'Voer eerst clustering uit in fase 2.'},
+  en:{heroTitle:'Portfolio Boardroom',heroSub:'Shared knowledge. Shared mojo.',p1Title:'Submit your question',p1Sub:'What is your biggest challenge or question around portfolio management?',placeholder:'Type your question or challenge here...',submitLabel:'Submit',toastDone:'Submitted! Feel free to add another question.',subsLabel:'Submissions',emptyMsg:'No submissions yet',toP2:'Go to phase 2 — Cluster →',p2Title:'Clustering',p2Sub:'Claude assigns submissions to the 6 Mojeo pillars.',clusterLabel:'Cluster with Claude',clustering:'Analysing...',toP3:'Go to phase 3 — Tables →',p3Title:'Tables',p3Sub:'Choose your table, select a pillar and generate a question.',back1:'Back to phase 1',back2:'Back to phase 2',reset:'Reset session',errorMin:'Add at least 3 questions before clustering.',errorApi:'Error connecting to Claude. Please try again.',sl0:'Collect',sl1:'Cluster',sl2:'Tables',confirmReset:'Are you sure you want to reset the session? All data will be deleted.',tableLabel:n=>`Table ${n}`,choosePillar:'Choose a pillar',generateQ:'Generate a question',newQ:'New question',noQuestions:'No questions for this pillar.',noClusters:'Please run clustering in phase 2 first.'}
+};
+
+function t(k,...args){const v=T[lang][k];return typeof v==='function'?v(...args):v;}
+function getPillars(){return PILLARS[lang];}
+function pillarColor(key){const p=getPillars().find(p=>p.key===key)||PILLARS.nl.find(p=>p.key===key)||PILLARS.en.find(p=>p.key===key);return p?p.color:'#888';}
+function escHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+function setLang(l){
+  lang=l;
+  document.getElementById('btn-nl').className='lang-btn'+(l==='nl'?' active':'');
+  document.getElementById('btn-en').className='lang-btn'+(l==='en'?' active':'');
+  const map={heroTitle:'hero-title',heroSub:'hero-sub',p1Title:'p1-title',p1Sub:'p1-sub',submitLabel:'submit-label',subsLabel:'subs-label',emptyMsg:'empty-msg',toP2:'to-p2-label',p2Title:'p2-title',p2Sub:'p2-sub',clusterLabel:'cluster-label',toP3:'to-p3-label',p3Title:'p3-title',p3Sub:'p3-sub',back1:'back1-label',back2:'back2-label',reset:'reset-link',sl0:'sl0',sl1:'sl1',sl2:'sl2'};
+  for(const[k,id]of Object.entries(map)){const el=document.getElementById(id);if(el)el.textContent=t(k);}
+  document.getElementById('q-input').placeholder=t('placeholder');
+  if(currentPhase===3)renderPhase3();
+  if(window._clusters)window._renderClusters(window._clusters);
 }
 
-function setLang(l) {
-  lang = l;
-  document.getElementById('btn-nl').className = 'lang-btn' + (l==='nl'?' active':'');
-  document.getElementById('btn-en').className = 'lang-btn' + (l==='en'?' active':'');
-  const keys = ['logoSub','p1Title','p1Sub','submitLabel','subsLabel','emptyMsg','toP2','p2Title','p2Sub','clusterLabel','toP3','p3Title','p3Sub','back1','back2','reset','sl0','sl1','sl2'];
-  const ids = {
-    logoSub:'logo-sub', p1Title:'p1-title', p1Sub:'p1-sub', submitLabel:'submit-label',
-    subsLabel:'subs-label', emptyMsg:'empty-msg', toP2:'to-p2-label', p2Title:'p2-title',
-    p2Sub:'p2-sub', clusterLabel:'cluster-label', toP3:'to-p3-label', p3Title:'p3-title',
-    p3Sub:'p3-sub', back1:'back1-label', back2:'back2-label', reset:'reset-link',
-    sl0:'sl0', sl1:'sl1', sl2:'sl2'
-  };
-  for (const k of keys) {
-    const el = document.getElementById(ids[k]);
-    if (el) el.textContent = t(k);
-  }
-  document.getElementById('q-input').placeholder = t('placeholder');
-  if (window._clusters) {
-    window._renderTables(window._clusters);
-  }
-}
-
-function updateStepper(phase) {
-  for (let i = 0; i < 3; i++) {
-    const num = document.getElementById('sn' + i);
-    const lbl = document.getElementById('sl' + i);
-    if (i + 1 < phase) {
-      num.className = 'step-num done';
-      lbl.className = 'step-label';
-    } else if (i + 1 === phase) {
-      num.className = 'step-num active';
-      lbl.className = 'step-label active';
-    } else {
-      num.className = 'step-num';
-      lbl.className = 'step-label';
-    }
+function updateStepper(p){
+  for(let i=0;i<3;i++){
+    const num=document.getElementById('sn'+i);
+    const lbl=document.getElementById('sl'+i);
+    if(i+1<p){num.className='step-num done';lbl.className='step-label';}
+    else if(i+1===p){num.className='step-num active';lbl.className='step-label active';}
+    else{num.className='step-num';lbl.className='step-label';}
   }
 }
 
-function setPhase(p) {
-  currentPhase = p;
-  document.getElementById('phase1').style.display = p === 1 ? 'block' : 'none';
-  document.getElementById('phase2').style.display = p === 2 ? 'block' : 'none';
-  document.getElementById('phase3').style.display = p === 3 ? 'block' : 'none';
+function setPhase(p){
+  currentPhase=p;
+  document.getElementById('phase1').style.display=p===1?'block':'none';
+  document.getElementById('phase2').style.display=p===2?'block':'none';
+  document.getElementById('phase3').style.display=p===3?'block':'none';
   updateStepper(p);
+  if(p===3)renderPhase3();
 }
 
-function goPhase2() { setPhase(2); }
-function goPhase3() { setPhase(3); }
-function goBack(p) { setPhase(p); }
+function goPhase2(){setPhase(2);}
+function goPhase3(){setPhase(3);}
+function goBack(p){setPhase(p);}
 
-window._renderSubmissions = function(subs) {
-  const list = document.getElementById('sub-list');
-  const empty = document.getElementById('empty-msg');
-  const pill = document.getElementById('count-pill');
-  if (pill) pill.textContent = subs.length;
-  if (subs.length === 0) {
-    if (list) list.innerHTML = '';
-    if (empty) empty.style.display = 'block';
-    return;
-  }
-  if (empty) empty.style.display = 'none';
-  if (list) {
-    list.innerHTML = subs.map(s => `<div class="submission-item">${escHtml(s)}</div>`).join('');
-    list.scrollTop = list.scrollHeight;
-  }
-};
+function renderPhase3(){
+  const container=document.getElementById('p3-content');
+  if(!window._clusters){container.innerHTML=`<div class="no-clusters-msg">${t('noClusters')}</div>`;return;}
+  const state=window._tableState[selectedTable]||{};
+  const activePillar=state.pillar||null;
+  const activeQuestion=state.question||null;
+  const aColor=activePillar?pillarColor(activePillar):'var(--orange)';
 
-function escHtml(s) {
-  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-}
+  let html=`<div class="table-selector">`;
+  for(let i=0;i<4;i++)html+=`<button class="table-btn ${i===selectedTable?'active':''}" onclick="selectTable(${i})">${t('tableLabel',i+1)}</button>`;
+  html+=`</div>`;
 
-async function submitQuestion() {
-  const input = document.getElementById('q-input');
-  const val = input.value.trim();
-  if (!val) return;
-  const btn = document.getElementById('submit-btn');
-  btn.disabled = true;
-  try {
-    await window._fb.push(window._fb.subsRef, val);
-    input.value = '';
-    const toast = document.getElementById('toast');
-    toast.textContent = t('toastDone');
-    toast.style.display = 'block';
-    setTimeout(() => toast.style.display = 'none', 3000);
-  } catch(e) {
-    alert('Fout bij opslaan. Controleer je internetverbinding.');
-  }
-  btn.disabled = false;
-}
-
-// Allow Enter+Shift for newline, Enter alone to submit
-document.addEventListener('DOMContentLoaded', () => {
-  document.getElementById('q-input').addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      submitQuestion();
-    }
+  html+=`<div class="section-label">${t('choosePillar')}</div>`;
+  html+=`<div class="pillar-grid">`;
+  getPillars().forEach(p=>{
+    const isA=activePillar===p.key;
+    html+=`<button class="pillar-btn ${isA?'active':''}" style="${isA?`background:${p.color};border-color:${p.color}`:''}" onclick="selectPillar('${p.key}')"><span class="pillar-dot" style="background:${isA?'rgba(255,255,255,0.7)':p.color}"></span>${p.key}</button>`;
   });
+  html+=`</div>`;
 
-  // Show/hide mod elements
-  if (isMod) {
-    document.getElementById('mod-divider').style.display = 'block';
-    document.getElementById('to-p2-btn').style.display = 'block';
-    document.getElementById('stepper').style.display = 'flex';
-    document.getElementById('reset-link').style.display = 'block';
-    document.getElementById('sub-list').style.display = 'flex';
-    document.getElementById('subs-label').style.display = 'block';
-  } else {
-    document.getElementById('stepper').style.display = 'none';
-    document.getElementById('phase2').style.display = 'none';
-    document.getElementById('phase3').style.display = 'none';
-  }
-});
-
-async function clusterQuestions() {
-  const { onValue, subsRef } = window._fb;
-  // Get current submissions
-  const subs = await new Promise(res => {
-    onValue(subsRef, snap => {
-      const data = snap.val();
-      res(data ? Object.values(data) : []);
-    }, { onlyOnce: true });
-  });
-
-  if (subs.length < 3) {
-    document.getElementById('cluster-output').innerHTML = `<div class="error-msg">${t('errorMin')}</div>`;
-    return;
+  if(activeQuestion){
+    html+=`<div class="question-display" style="background:${aColor}18;border-left-color:${aColor}"><p>"${escHtml(activeQuestion)}"</p><div class="question-meta">${activePillar}</div></div>`;
+    html+=`<button class="btn btn-ghost" onclick="generateQuestion()" style="border:2px solid var(--border)!important;margin-top:0">${t('newQ')}</button>`;
+  } else if(activePillar){
+    html+=`<button class="btn btn-orange" onclick="generateQuestion()" style="margin-top:0">${t('generateQ')}</button>`;
   }
 
-  const btn = document.getElementById('cluster-btn');
-  btn.disabled = true;
-  document.getElementById('cluster-label').innerHTML = `<span class="spinner" style="display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,0.3);border-top-color:white;border-radius:50%;animation:spin 0.7s linear infinite;vertical-align:middle;margin-right:8px"></span>${t('clustering')}`;
-
-  const prompt = lang === 'nl'
-    ? `Je bent facilitator van een World Café over portfolio management. Analyseer de onderstaande inzendingen van deelnemers. Groepeer ze in precies 3 clusters. Kies voor elk cluster een bondige, prikkelende themanaam (max 6 woorden). Kies ook per cluster de meest uitdagende en discussiewaardigste vraag als tafelvraag. Geef je antwoord UITSLUITEND als geldig JSON-object, zonder uitleg, zonder markdown, zonder codeblokken:\n{"clusters":[{"theme":"...","questions":["..."],"selected":"..."},{"theme":"...","questions":["..."],"selected":"..."},{"theme":"...","questions":["..."],"selected":"..."}]}\n\nInzendingen:\n${subs.map((s,i)=>`${i+1}. ${s}`).join('\n')}`
-    : `You are a facilitator of a World Café on portfolio management. Analyse the submissions below. Group them into exactly 3 clusters. Choose a concise, thought-provoking theme name (max 6 words) for each. Also select the most challenging and discussion-worthy question per cluster as the table question. Respond ONLY with a valid JSON object, no explanation, no markdown, no code blocks:\n{"clusters":[{"theme":"...","questions":["..."],"selected":"..."},{"theme":"...","questions":["..."],"selected":"..."},{"theme":"...","questions":["..."],"selected":"..."}]}\n\nSubmissions:\n${subs.map((s,i)=>`${i+1}. ${s}`).join('\n')}`;
-
-  try {
-    const res = await fetch('/.netlify/functions/cluster', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ prompt })
-    });
-    const data = await res.json();
-    const text = data.content.map(i => i.text || '').join('');
-    const clean = text.replace(/```json|```/g, '').trim();
-    const parsed = JSON.parse(clean);
-    const clusters = parsed.clusters;
-
-    // Save to Firebase so all devices see it
-    await window._fb.set(window._fb.clustersRef, clusters);
-
-  } catch(e) {
-    document.getElementById('cluster-output').innerHTML = `<div class="error-msg">${t('errorApi')}</div>`;
-  }
-
-  btn.disabled = false;
-  document.getElementById('cluster-label').textContent = t('clusterLabel');
+  container.innerHTML=html;
 }
 
-window._renderClusters = function(clusters) {
-  const html = clusters.map((c, i) => `
-    <div class="cluster-block">
-      <div class="cluster-header">
-        <div class="cluster-num">${i+1}</div>
-        <div class="cluster-theme">${escHtml(c.theme)}</div>
-      </div>
-      <div class="cluster-questions">
-        ${c.questions.map(q => `<div class="cluster-q-item">${escHtml(q)}</div>`).join('')}
-      </div>
-    </div>
-  `).join('');
-  document.getElementById('cluster-output').innerHTML = html;
-};
+function selectTable(i){selectedTable=i;renderPhase3();}
 
-// Track selected questions per table (index -> question string)
-window._tableSelections = {};
-
-window._renderTables = function(clusters) {
-  const html = clusters.map((c, i) => {
-    const sel = window._tableSelections[i] || null;
-    const btnLabel = lang === 'nl' ? 'Selecteer een vraag' : 'Select a question';
-    const newLabel = lang === 'nl' ? 'Andere vraag' : 'New question';
-    return `
-    <div class="table-card" id="table-card-${i}">
-      <div class="table-card-header">
-        <div class="table-badge">${t('tableLabel', i+1)}</div>
-        <div class="table-theme">${escHtml(c.theme)}</div>
-      </div>
-      <div style="padding:14px 16px">
-        ${sel
-          ? `<div class="table-question" id="table-q-${i}">"${escHtml(sel)}"</div>
-             <button class="btn btn-outline" style="margin-top:0.75rem" onclick="pickQuestion(${i})">${newLabel}</button>`
-          : `<button class="btn btn-primary" style="margin-top:0" onclick="pickQuestion(${i})">${btnLabel}</button>`
-        }
-      </div>
-    </div>
-  `}).join('');
-  document.getElementById('tables-output').innerHTML = html;
-};
-
-function pickQuestion(tableIndex) {
-  const clusters = window._clusters;
-  if (!clusters) return;
-  const questions = clusters[tableIndex].questions;
-  const current = window._tableSelections[tableIndex];
-  // Pick random, avoid same as current if possible
-  let available = questions.filter(q => q !== current);
-  if (available.length === 0) available = questions;
-  const picked = available[Math.floor(Math.random() * available.length)];
-  window._tableSelections[tableIndex] = picked;
-  window._renderTables(clusters);
+function selectPillar(key){
+  if(!window._tableState[selectedTable])window._tableState[selectedTable]={};
+  window._tableState[selectedTable].pillar=key;
+  window._tableState[selectedTable].question=null;
+  renderPhase3();
 }
 
-async function resetSession() {
-  if (!confirm(t('confirmReset'))) return;
-  const { remove, subsRef, clustersRef, set, phaseRef } = window._fb;
+function generateQuestion(){
+  const state=window._tableState[selectedTable];
+  if(!state||!state.pillar||!window._clusters)return;
+  const cluster=window._clusters.find(c=>c.theme===state.pillar);
+  if(!cluster||!cluster.questions||cluster.questions.length===0){alert(t('noQuestions'));return;}
+  const current=state.question;
+  let available=cluster.questions.filter(q=>q!==current);
+  if(available.length===0)available=cluster.questions;
+  state.question=available[Math.floor(Math.random()*available.length)];
+  renderPhase3();
+}
+
+window._renderSubmissions=function(subs){
+  const list=document.getElementById('sub-list');
+  const empty=document.getElementById('empty-msg');
+  const pill=document.getElementById('count-pill');
+  if(pill)pill.textContent=subs.length;
+  if(!list)return;
+  if(subs.length===0){list.innerHTML='';if(empty)empty.style.display='block';return;}
+  if(empty)empty.style.display='none';
+  list.innerHTML=subs.map(s=>`<div class="sub-item">${escHtml(s)}</div>`).join('');
+  list.scrollTop=list.scrollHeight;
+};
+
+async function submitQuestion(){
+  const input=document.getElementById('q-input');
+  const val=input.value.trim();
+  if(!val)return;
+  const btn=document.getElementById('submit-btn');
+  btn.disabled=true;
+  try{
+    await window._fb.push(window._fb.subsRef,val);
+    input.value='';
+    const toast=document.getElementById('toast');
+    toast.textContent=t('toastDone');
+    toast.style.display='block';
+    setTimeout(()=>toast.style.display='none',3000);
+  }catch(e){alert('Fout bij opslaan.');}
+  btn.disabled=false;
+}
+
+async function clusterQuestions(){
+  const{onValue,subsRef}=window._fb;
+  const subs=await new Promise(res=>{onValue(subsRef,snap=>{res(snap.val()?Object.values(snap.val()):[]);},{onlyOnce:true});});
+  if(subs.length<3){document.getElementById('cluster-output').innerHTML=`<div class="error-msg">${t('errorMin')}</div>`;return;}
+  const btn=document.getElementById('cluster-btn');
+  btn.disabled=true;
+  document.getElementById('cluster-label').innerHTML=`<span class="spinner"></span>${t('clustering')}`;
+  const prompt=lang==='nl'
+    ?`Je bent facilitator van een World Café over portfolio management bij Mojeo. Mojeo hanteert 6 vaste pijlers: Strategie, Governance, Inzicht, Sturing, Facilitering en Cultuur.\n\nAnalyseer de inzendingen en verdeel ze over deze 6 vaste pijlers. Gebruik ALLEEN deze 6 pijlers als themanaam. Elke pijler moet minimaal één vraag bevatten. Kies per pijler de meest prikkelende vraag als tafelvraag.\n\nGeef je antwoord UITSLUITEND als geldig JSON-object, geen uitleg, geen markdown:\n{"clusters":[{"theme":"Strategie","questions":["..."],"selected":"..."},{"theme":"Governance","questions":["..."],"selected":"..."},{"theme":"Inzicht","questions":["..."],"selected":"..."},{"theme":"Sturing","questions":["..."],"selected":"..."},{"theme":"Facilitering","questions":["..."],"selected":"..."},{"theme":"Cultuur","questions":["..."],"selected":"..."}]}\n\nInzendingen:\n${subs.map((s,i)=>`${i+1}. ${s}`).join('\n')}`
+    :`You are a facilitator of a World Café on portfolio management at Mojeo. Mojeo uses 6 fixed pillars: Strategy, Governance, Insight, Steering, Facilitation and Culture.\n\nAnalyse the submissions and assign them to these 6 fixed pillars. Use ONLY these pillar names. Each pillar must have at least one question. Select the most thought-provoking question per pillar.\n\nRespond ONLY with valid JSON, no explanation, no markdown:\n{"clusters":[{"theme":"Strategy","questions":["..."],"selected":"..."},{"theme":"Governance","questions":["..."],"selected":"..."},{"theme":"Insight","questions":["..."],"selected":"..."},{"theme":"Steering","questions":["..."],"selected":"..."},{"theme":"Facilitation","questions":["..."],"selected":"..."},{"theme":"Culture","questions":["..."],"selected":"..."}]}\n\nSubmissions:\n${subs.map((s,i)=>`${i+1}. ${s}`).join('\n')}`;
+  try{
+    const res=await fetch('/.netlify/functions/cluster',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt})});
+    const data=await res.json();
+    const text=data.content.map(i=>i.text||'').join('');
+    const clean=text.replace(/```json|```/g,'').trim();
+    const clusters=JSON.parse(clean).clusters;
+    await window._fb.set(window._fb.clustersRef,clusters);
+  }catch(e){document.getElementById('cluster-output').innerHTML=`<div class="error-msg">${t('errorApi')}</div>`;}
+  btn.disabled=false;
+  document.getElementById('cluster-label').textContent=t('clusterLabel');
+}
+
+window._renderClusters=function(clusters){
+  const html=clusters.map(c=>{
+    const color=pillarColor(c.theme);
+    return`<div class="cluster-block"><div class="cluster-header"><span class="cluster-dot" style="background:${color}"></span><span class="cluster-theme-label">${escHtml(c.theme)}</span><span style="margin-left:auto;font-size:11px;color:var(--ink-faint)">${c.questions?c.questions.length:0}</span></div>${(c.questions||[]).map(q=>`<div class="cluster-q">${escHtml(q)}</div>`).join('')}</div>`;
+  }).join('');
+  document.getElementById('cluster-output').innerHTML=html;
+};
+
+async function resetSession(){
+  if(!confirm(t('confirmReset')))return;
+  const{remove,subsRef,clustersRef}=window._fb;
   await remove(subsRef);
   await remove(clustersRef);
+  window._clusters=null;
+  window._tableState={};
+  document.getElementById('cluster-output').innerHTML='';
+  document.getElementById('to-p3-btn').style.display='none';
   setPhase(1);
-  window._clusters = null;
-  document.getElementById('cluster-output').innerHTML = '';
-  document.getElementById('to-p3-btn').style.display = 'none';
-  document.getElementById('tables-output').innerHTML = '';
 }
+
+document.addEventListener('DOMContentLoaded',()=>{
+  document.getElementById('q-input').addEventListener('keydown',(e)=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();submitQuestion();}});
+  if(isMod){
+    document.getElementById('stepper').style.display='flex';
+    document.getElementById('reset-link').style.display='block';
+    document.getElementById('to-p2-btn').style.display='block';
+    document.getElementById('sub-list').style.display='flex';
+  } else {
+    document.getElementById('stepper').style.display='none';
+    document.getElementById('phase2').style.display='none';
+    document.getElementById('phase3').style.display='none';
+    document.getElementById('to-p2-btn').style.display='none';
+    document.getElementById('reset-link').style.display='none';
+  }
+});
 </script>
 </body>
 </html>
