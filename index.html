@@ -231,8 +231,13 @@ function setPhase(p){
   document.getElementById('phase1').style.display=p===1?'block':'none';
   document.getElementById('phase2').style.display=p===2?'block':'none';
   const p3=document.getElementById('phase3');
-  if(p===3){p3.className='active';renderPhase3();}
-  else{p3.className='';p3.style.display='none';}
+  if(p===3){
+    p3.style.display='flex';
+    p3.style.flexDirection='column';
+    renderPhase3();
+  } else {
+    p3.style.display='none';
+  }
   updateStepper(p);
 }
 
