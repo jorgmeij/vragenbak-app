@@ -450,6 +450,7 @@ async function clusterQuestions(){
 window._pendingEdits={};
 
 window._renderClusters=function(clusters){
+  clusters.forEach(c=>{if(!Array.isArray(c.questions))c.questions=[];});
   const pillarKeys=getPillars().map(p=>p.key);
   const hasPending=Object.keys(window._pendingEdits).length>0;
   const html=clusters.map((c,ci)=>{
@@ -515,7 +516,8 @@ function applyEdits(){
   // Sort reverse to preserve indices when splicing
   toProcess.sort((a,b)=>b.qi-a.qi||b.ci-a.ci);
   toProcess.forEach(({ci,qi,q,edit})=>{
-    if(!clusters[ci]||!clusters[ci].questions)return;
+    if(!clusters[ci])return;
+    if(!Array.isArray(clusters[ci].questions))clusters[ci].questions=[];
     clusters[ci].questions.splice(qi,1);
     if(clusters[ci].selected===q)clusters[ci].selected=clusters[ci].questions[0]||'';
     if(!edit.remove&&edit.newPillar){
@@ -526,6 +528,7 @@ function applyEdits(){
         target={theme:edit.newPillar,questions:[],selected:''};
         clusters.push(target);
       }
+      if(!Array.isArray(target.questions))target.questions=[];
       target.questions.push(q);
       if(!target.selected)target.selected=q;
     }
