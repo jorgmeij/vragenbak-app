@@ -439,12 +439,56 @@ async function clusterQuestions(){
 }
 
 window._renderClusters=function(clusters){
-  const html=clusters.map(c=>{
+  const pillarKeys=getPillars().map(p=>p.key);
+  const html=clusters.map((c,ci)=>{
     const color=pillarColor(c.theme);
-    return`<div class="cluster-block"><div class="cluster-header"><span class="cluster-dot" style="background:${color}"></span><span class="cluster-theme-label">${escHtml(c.theme)}</span><span style="margin-left:auto;font-size:11px;color:var(--ink-faint)">${c.questions?c.questions.length:0}</span></div>${(c.questions||[]).map(q=>`<div class="cluster-q">${escHtml(q)}</div>`).join('')}</div>`;
+    const questions=c.questions||[];
+    return`<div class="cluster-block">
+      <div class="cluster-header">
+        <span class="cluster-dot" style="background:${color}"></span>
+        <span class="cluster-theme-label">${escHtml(c.theme)}</span>
+        <span style="margin-left:auto;font-size:11px;color:var(--ink-faint)">${questions.length}</span>
+      </div>
+      ${questions.map((q,qi)=>`
+        <div class="cluster-q" style="display:flex;align-items:center;gap:8px;padding:8px 14px">
+          <span style="flex:1;font-size:13px;color:var(--ink-muted);line-height:1.4">${escHtml(q)}</span>
+          <select onchange="moveQuestion(${ci},${qi},this.value)" style="font-size:11px;font-family:Poppins,sans-serif;border:1px solid var(--border);border-radius:6px;padding:3px 6px;background:white;color:var(--ink);cursor:pointer;flex-shrink:0">
+            ${pillarKeys.map(pk=>`<option value="${pk}" ${pk===c.theme?'selected':''}>${pk}</option>`).join('')}
+          </select>
+          <button onclick="removeQuestion(${ci},${qi})" style="background:none;border:none;cursor:pointer;color:var(--ink-faint);font-size:16px;padding:2px 4px;flex-shrink:0;line-height:1" title="Verwijderen">×</button>
+        </div>`).join('')}
+    </div>`;
   }).join('');
   document.getElementById('cluster-output').innerHTML=html;
 };
+
+function moveQuestion(fromCluster,questionIdx,toPillar){
+  const clusters=window._clusters;
+  if(!clusters)return;
+  const q=clusters[fromCluster].questions[questionIdx];
+  // Remove from source
+  clusters[fromCluster].questions.splice(questionIdx,1);
+  if(clusters[fromCluster].selected===q)clusters[fromCluster].selected=clusters[fromCluster].questions[0]||'';
+  // Add to target
+  const target=clusters.find(c=>c.theme===toPillar);
+  if(target){
+    target.questions.push(q);
+    if(!target.selected)target.selected=q;
+  }
+  // Save and re-render
+  window._fb.set(window._fb.clustersRef,clusters);
+  window._renderClusters(clusters);
+}
+
+function removeQuestion(clusterIdx,questionIdx){
+  const clusters=window._clusters;
+  if(!clusters)return;
+  const q=clusters[clusterIdx].questions[questionIdx];
+  clusters[clusterIdx].questions.splice(questionIdx,1);
+  if(clusters[clusterIdx].selected===q)clusters[clusterIdx].selected=clusters[clusterIdx].questions[0]||'';
+  window._fb.set(window._fb.clustersRef,clusters);
+  window._renderClusters(clusters);
+}
 
 function toggleKwPanel(tableIdx){
   const panel=document.getElementById('kw-panel-'+tableIdx);
