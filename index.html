@@ -203,7 +203,15 @@ const clustersRef=ref(db,'clusters');
 const keywordsRef=ref(db,'keywords');
 window._fb={db,ref,push,onValue,remove,set,subsRef,clustersRef,keywordsRef};
 onValue(subsRef,(snap)=>{const data=snap.val();window._renderSubmissions(data?Object.values(data):[]);});
-onValue(clustersRef,(snap)=>{const data=snap.val();if(data){window._clusters=data;window._renderClusters(data);const btn=document.getElementById('to-p3-btn');if(btn)btn.style.display='block';}});
+onValue(clustersRef,(snap)=>{
+    const data=snap.val();
+    if(data&&!window._editingClusters){
+      window._clusters=data;
+      window._renderClusters(data);
+      const btn=document.getElementById('to-p3-btn');
+      if(btn)btn.style.display='block';
+    }
+  });
 onValue(keywordsRef,(snap)=>{
   window._keywords=snap.val()||{};
   if(typeof showCloud==='function'&&window._currentCloudView!==undefined){
@@ -438,8 +446,12 @@ async function clusterQuestions(){
   document.getElementById('cluster-label').textContent=t('clusterLabel');
 }
 
+// Local edits: { "clusterIdx-questionIdx": { newPillar, remove } }
+window._pendingEdits={};
+
 window._renderClusters=function(clusters){
   const pillarKeys=getPillars().map(p=>p.key);
+  const hasPending=Object.keys(window._pendingEdits).length>0;
   const html=clusters.map((c,ci)=>{
     const color=pillarColor(c.theme);
     const questions=c.questions||[];
@@ -449,45 +461,76 @@ window._renderClusters=function(clusters){
         <span class="cluster-theme-label">${escHtml(c.theme)}</span>
         <span style="margin-left:auto;font-size:11px;color:var(--ink-faint)">${questions.length}</span>
       </div>
-      ${questions.map((q,qi)=>`
-        <div class="cluster-q" style="display:flex;align-items:center;gap:8px;padding:8px 14px">
+      ${questions.map((q,qi)=>{
+        const key=ci+'-'+qi;
+        const pending=window._pendingEdits[key];
+        const currentPillar=pending&&!pending.remove?pending.newPillar:c.theme;
+        const isRemoved=pending&&pending.remove;
+        return`<div class="cluster-q" style="display:flex;align-items:center;gap:8px;padding:8px 14px;${isRemoved?'opacity:0.35;text-decoration:line-through':''}">
           <span style="flex:1;font-size:13px;color:var(--ink-muted);line-height:1.4">${escHtml(q)}</span>
-          <select onchange="moveQuestion(${ci},${qi},this.value)" style="font-size:11px;font-family:Poppins,sans-serif;border:1px solid var(--border);border-radius:6px;padding:3px 6px;background:white;color:var(--ink);cursor:pointer;flex-shrink:0">
-            ${pillarKeys.map(pk=>`<option value="${pk}" ${pk===c.theme?'selected':''}>${pk}</option>`).join('')}
+          <select id="sel-${key}" onchange="stageMoveQuestion(${ci},${qi},this.value)" style="font-size:11px;font-family:Poppins,sans-serif;border:1px solid var(--border);border-radius:6px;padding:3px 6px;background:white;color:var(--ink);cursor:pointer;flex-shrink:0">
+            ${pillarKeys.map(pk=>`<option value="${pk}" ${pk===currentPillar?'selected':''}>${pk}</option>`).join('')}
           </select>
-          <button onclick="removeQuestion(${ci},${qi})" style="background:none;border:none;cursor:pointer;color:var(--ink-faint);font-size:16px;padding:2px 4px;flex-shrink:0;line-height:1" title="Verwijderen">×</button>
-        </div>`).join('')}
+          <button onclick="stageRemoveQuestion(${ci},${qi})" style="background:none;border:none;cursor:pointer;color:${isRemoved?'#FF3300':'var(--ink-faint)'};font-size:16px;padding:2px 4px;flex-shrink:0;line-height:1" title="${isRemoved?'Herstel':'Verwijderen'}">${isRemoved?'↩':'×'}</button>
+        </div>`;
+      }).join('')}
     </div>`;
   }).join('');
-  document.getElementById('cluster-output').innerHTML=html;
+  const editBtn=hasPending?`<button onclick="applyEdits()" style="width:100%;padding:11px;border-radius:10px;background:#FF3300;color:white;border:none;font-family:Poppins,sans-serif;font-size:14px;font-weight:600;cursor:pointer;margin-top:1rem">Bijwerken ✓</button>`:'';
+  document.getElementById('cluster-output').innerHTML=html+editBtn;
 };
 
-function moveQuestion(fromCluster,questionIdx,toPillar){
+function stageMoveQuestion(ci,qi,newPillar){
+  const key=ci+'-'+qi;
   const clusters=window._clusters;
-  if(!clusters)return;
-  const q=clusters[fromCluster].questions[questionIdx];
-  // Remove from source
-  clusters[fromCluster].questions.splice(questionIdx,1);
-  if(clusters[fromCluster].selected===q)clusters[fromCluster].selected=clusters[fromCluster].questions[0]||'';
-  // Add to target
-  const target=clusters.find(c=>c.theme===toPillar);
-  if(target){
-    target.questions.push(q);
-    if(!target.selected)target.selected=q;
+  if(newPillar===clusters[ci].theme){
+    delete window._pendingEdits[key];
+  } else {
+    window._pendingEdits[key]={newPillar,remove:false};
   }
-  // Save and re-render
-  window._fb.set(window._fb.clustersRef,clusters);
   window._renderClusters(clusters);
 }
 
-function removeQuestion(clusterIdx,questionIdx){
-  const clusters=window._clusters;
-  if(!clusters)return;
-  const q=clusters[clusterIdx].questions[questionIdx];
-  clusters[clusterIdx].questions.splice(questionIdx,1);
-  if(clusters[clusterIdx].selected===q)clusters[clusterIdx].selected=clusters[clusterIdx].questions[0]||'';
-  window._fb.set(window._fb.clustersRef,clusters);
+function stageRemoveQuestion(ci,qi){
+  const key=ci+'-'+qi;
+  if(window._pendingEdits[key]&&window._pendingEdits[key].remove){
+    delete window._pendingEdits[key];
+  } else {
+    window._pendingEdits[key]={remove:true};
+  }
+  window._renderClusters(window._clusters);
+}
+
+function applyEdits(){
+  const clusters=JSON.parse(JSON.stringify(window._clusters));
+  // Process removals and moves
+  const toRemove=[];
+  Object.entries(window._pendingEdits).forEach(([key,edit])=>{
+    const [ci,qi]=[parseInt(key.split('-')[0]),parseInt(key.split('-')[1])];
+    const q=clusters[ci].questions[qi];
+    if(edit.remove){
+      toRemove.push({ci,qi,q});
+    } else if(edit.newPillar){
+      toRemove.push({ci,qi,q,moveTo:edit.newPillar});
+    }
+  });
+  // Remove in reverse order to preserve indices
+  toRemove.sort((a,b)=>b.qi-a.qi||b.ci-a.ci);
+  toRemove.forEach(({ci,qi,q,moveTo})=>{
+    clusters[ci].questions.splice(qi,1);
+    if(clusters[ci].selected===q)clusters[ci].selected=clusters[ci].questions[0]||'';
+    if(moveTo){
+      const target=clusters.find(c=>c.theme===moveTo);
+      if(target){target.questions.push(q);if(!target.selected)target.selected=q;}
+    }
+  });
+  window._pendingEdits={};
+  window._editingClusters=true;
+  window._clusters=clusters;
+  window._fb.set(window._fb.clustersRef,clusters).then(()=>{window._editingClusters=false;});
   window._renderClusters(clusters);
+  const btn=document.getElementById('to-p3-btn');
+  if(btn)btn.style.display='block';
 }
 
 function toggleKwPanel(tableIdx){
