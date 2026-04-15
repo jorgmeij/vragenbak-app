@@ -503,31 +503,39 @@ function stageRemoveQuestion(ci,qi){
 
 function applyEdits(){
   const clusters=JSON.parse(JSON.stringify(window._clusters));
-  // Process removals and moves
-  const toRemove=[];
+  const toProcess=[];
   Object.entries(window._pendingEdits).forEach(([key,edit])=>{
-    const [ci,qi]=[parseInt(key.split('-')[0]),parseInt(key.split('-')[1])];
+    const parts=key.split('-');
+    const ci=parseInt(parts[0]);
+    const qi=parseInt(parts[1]);
+    if(!clusters[ci]||!clusters[ci].questions[qi])return;
     const q=clusters[ci].questions[qi];
-    if(edit.remove){
-      toRemove.push({ci,qi,q});
-    } else if(edit.newPillar){
-      toRemove.push({ci,qi,q,moveTo:edit.newPillar});
-    }
+    toProcess.push({ci,qi,q,edit});
   });
-  // Remove in reverse order to preserve indices
-  toRemove.sort((a,b)=>b.qi-a.qi||b.ci-a.ci);
-  toRemove.forEach(({ci,qi,q,moveTo})=>{
+  // Sort reverse to preserve indices when splicing
+  toProcess.sort((a,b)=>b.qi-a.qi||b.ci-a.ci);
+  toProcess.forEach(({ci,qi,q,edit})=>{
+    if(!clusters[ci]||!clusters[ci].questions)return;
     clusters[ci].questions.splice(qi,1);
     if(clusters[ci].selected===q)clusters[ci].selected=clusters[ci].questions[0]||'';
-    if(moveTo){
-      const target=clusters.find(c=>c.theme===moveTo);
-      if(target){target.questions.push(q);if(!target.selected)target.selected=q;}
+    if(!edit.remove&&edit.newPillar){
+      // Find target by theme - search all clusters
+      let target=clusters.find(c=>c.theme===edit.newPillar);
+      if(!target){
+        // Fallback: create entry if missing
+        target={theme:edit.newPillar,questions:[],selected:''};
+        clusters.push(target);
+      }
+      target.questions.push(q);
+      if(!target.selected)target.selected=q;
     }
   });
   window._pendingEdits={};
   window._editingClusters=true;
   window._clusters=clusters;
-  window._fb.set(window._fb.clustersRef,clusters).then(()=>{window._editingClusters=false;});
+  window._fb.set(window._fb.clustersRef,clusters).then(()=>{
+    setTimeout(()=>{window._editingClusters=false;},1000);
+  });
   window._renderClusters(clusters);
   const btn=document.getElementById('to-p3-btn');
   if(btn)btn.style.display='block';
